@@ -2,6 +2,7 @@ package com.example.apsitcanteen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -12,8 +13,15 @@ import com.example.apsitcanteen.models.CartItem;
 import com.example.apsitcanteen.models.Order;
 import com.example.apsitcanteen.models.User;
 import com.example.apsitcanteen.utils.CartManager;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderConfirmationActivity extends AppCompatActivity {
@@ -75,6 +83,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                                     orderId = documentReference.getId();
                                     ((TextView) findViewById(R.id.tvOrderId)).setText("#" + orderId);
                                     Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+                                    
+                                    // Deduct ordered items from inventory
+                                    deductInventory(items);
                                 })
                                 .addOnFailureListener(e -> {
                                     progressBar.setVisibility(View.GONE);
@@ -82,6 +93,59 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                                 });
                     }
                 });
+    }
+
+    /**
+     * Deducts the ordered quantities from the 'inventory' collection.
+     * Uses a WriteBatch for atomicity and FieldValue.increment for safety.
+     */
+    private void deductInventory(List<CartItem> items) {
+        if (items == null || items.isEmpty()) return;
+
+        WriteBatch batch = db.batch();
+        List<Task<QuerySnapshot>> queryTasks = new ArrayList<>();
+        List<CartItem> validItems = new ArrayList<>();
+
+        // 1. Create a query task for each item to find its corresponding inventory document by name
+        for (CartItem item : items) {
+            if (item.getFoodItem() != null && item.getFoodItem().getName() != null) {
+                validItems.add(item);
+                queryTasks.add(db.collection("inventory")
+                        .whereEqualTo("itemName", item.getFoodItem().getName())
+                        .get());
+            }
+        }
+
+        if (queryTasks.isEmpty()) return;
+
+        // 2. Wait for all document lookups to complete
+        Tasks.whenAllComplete(queryTasks).addOnCompleteListener(allTasks -> {
+            boolean hasUpdates = false;
+            for (int i = 0; i < queryTasks.size(); i++) {
+                Task<QuerySnapshot> task = queryTasks.get(i);
+                CartItem cartItem = validItems.get(i);
+
+                if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                    // Match found: get the first matching inventory document
+                    DocumentSnapshot inventoryDoc = task.getResult().getDocuments().get(0);
+                    int quantityToDeduct = cartItem.getQuantity();
+
+                    // Atomically deduct the quantity.
+                    batch.update(inventoryDoc.getReference(), "currentStock", FieldValue.increment(-quantityToDeduct));
+                    hasUpdates = true;
+                } else {
+                    Log.w("InventoryDeduction", "Inventory item not found for: " + 
+                            (cartItem.getFoodItem() != null ? cartItem.getFoodItem().getName() : "Unknown"));
+                }
+            }
+
+            // 3. Commit the batch if there are updates
+            if (hasUpdates) {
+                batch.commit().addOnFailureListener(e -> {
+                    Log.e("InventoryDeduction", "Failed to commit inventory batch updates", e);
+                });
+            }
+        });
     }
 
     private void setupItemsList() {
