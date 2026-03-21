@@ -1,8 +1,11 @@
 package com.example.apsitcanteen;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +35,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_dashboard);
 
         db = FirebaseFirestore.getInstance();
+
+        // Add fade-in animation to the root view
+        View root = findViewById(R.id.scrollView);
+        Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        fadeIn.setDuration(500);
+        root.startAnimation(fadeIn);
 
         setupToolbar();
         loadStatsAndRecentOrders();
@@ -86,34 +95,44 @@ public class AdminDashboardActivity extends AppCompatActivity {
                         }
                     }
 
-                    updateUI(todayOrdersCount, todayRevenue, statusCounts, recentOrders);
+                    updateUI(todayOrdersCount, (int)todayRevenue, statusCounts, recentOrders);
                 });
     }
 
-    private void updateUI(int todayOrders, double todayRevenue, Map<String, Integer> statusCounts, List<Order> recentOrders) {
-        ((TextView) findViewById(R.id.tvTodayOrders)).setText(String.valueOf(todayOrders));
-        ((TextView) findViewById(R.id.tvTodayRevenue)).setText("₹" + (int) todayRevenue);
-        ((TextView) findViewById(R.id.tvPendingOrders)).setText(String.valueOf(statusCounts.get("Pending")));
+    private void updateUI(int todayOrders, int todayRevenue, Map<String, Integer> statusCounts, List<Order> recentOrders) {
+        animateNumber((TextView) findViewById(R.id.tvTodayOrders), todayOrders);
+        animateRevenue((TextView) findViewById(R.id.tvTodayRevenue), todayRevenue);
+        animateNumber((TextView) findViewById(R.id.tvPendingOrders), statusCounts.get("Pending"));
+        
+        // Simulating low stock for demo purposes or fetch from real inventory count
+        animateNumber((TextView) findViewById(R.id.tvLowStock), 3); 
 
         updateStatusBar(R.id.pbPending, R.id.tvPendingCount, statusCounts.get("Pending"));
         updateStatusBar(R.id.pbPreparing, R.id.tvPreparingCount, statusCounts.get("Preparing"));
         updateStatusBar(R.id.pbReady, R.id.tvReadyCount, statusCounts.get("Ready"));
         updateStatusBar(R.id.pbCompleted, R.id.tvCompletedCount, statusCounts.get("Completed"));
         
-        // Handling potentially missing IDs from original layout or renaming
-        View pbCancelled = findViewById(R.id.pbCancelled);
-        View tvCancelledCount = findViewById(R.id.tvCancelledCount);
-        if (pbCancelled != null && tvCancelledCount != null) {
-            updateStatusBar(R.id.pbCancelled, R.id.tvCancelledCount, 0); // Need Cancelled in model if used
-        }
-
         updateRecentOrdersUI(recentOrders);
+    }
+
+    private void animateNumber(TextView textView, int endValue) {
+        ValueAnimator animator = ValueAnimator.ofInt(0, endValue);
+        animator.setDuration(1000);
+        animator.addUpdateListener(animation -> textView.setText(animation.getAnimatedValue().toString()));
+        animator.start();
+    }
+
+    private void animateRevenue(TextView textView, int endValue) {
+        ValueAnimator animator = ValueAnimator.ofInt(0, endValue);
+        animator.setDuration(1000);
+        animator.addUpdateListener(animation -> textView.setText("₹" + animation.getAnimatedValue().toString()));
+        animator.start();
     }
 
     private void updateStatusBar(int pbId, int tvId, int count) {
         ((TextView) findViewById(tvId)).setText(String.valueOf(count));
         ProgressBar pb = findViewById(pbId);
-        pb.setMax(20); // Arbitrary max
+        pb.setMax(20); 
         pb.setProgress(count);
     }
 
@@ -157,13 +176,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         findViewById(R.id.cardMenuManagement).setOnClickListener(v -> startActivity(new Intent(this, AdminMenuManagementActivity.class)));
         findViewById(R.id.cardOrderManagement).setOnClickListener(v -> startActivity(new Intent(this, AdminOrderManagementActivity.class)));
         findViewById(R.id.tvViewAllOrders).setOnClickListener(v -> startActivity(new Intent(this, AdminOrderManagementActivity.class)));
-        
-        // Placeholder for other cards if they exist
-        View cardInventory = findViewById(R.id.cardInventory);
-        if (cardInventory != null) cardInventory.setOnClickListener(v -> startActivity(new Intent(this, AdminInventoryActivity.class)));
-        
-        View cardReports = findViewById(R.id.cardReports);
-        if (cardReports != null) cardReports.setOnClickListener(v -> startActivity(new Intent(this, AdminReportsActivity.class)));
+        findViewById(R.id.cardInventory).setOnClickListener(v -> startActivity(new Intent(this, AdminInventoryActivity.class)));
+        findViewById(R.id.cardReports).setOnClickListener(v -> startActivity(new Intent(this, AdminReportsActivity.class)));
     }
 
     @Override
