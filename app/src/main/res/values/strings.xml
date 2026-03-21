@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APSIT CANTEEN</string>
+    <string name="tagline">Hot food. Fast pickup.</string>
+    <string name="continue_as">Continue as</string>
+    <string name="student_login">Student Login</string>
+    <string name="admin_login">Admin Login</string>
+    <string name="new_here_create">New here? Create an account</string>
+
+    <string name="welcome_back">Welcome Back</string>
+    <string name="sign_in_student">Sign in to your student account</string>
+    <string name="email_hint">College Email</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="or_text">or</string>
+    <string name="no_account_signup">Don\'t have an account? Sign Up</string>
+
+    <string name="admin_panel">Admin Panel</string>
+    <string name="authorized_only">Authorized personnel only</string>
+    <string name="admin_code_hint">Admin Secret Code</string>
+    <string name="sign_in_admin">Sign In as Admin</string>
+
+    <string name="create_account">Create Account</string>
+    <string name="join_us">Join our canteen community</string>
+    <string name="full_name_hint">Full Name</string>
+    <string name="phone_hint">Phone Number</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="already_have_account">Already have an account? Login</string>
+
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="welcome_admin">Welcome, Admin</string>
+    <string name="canteen_mgmt">APSIT Canteen Management</string>
+    <string name="total_orders">Total Orders Today</string>
+    <string name="revenue_today">Revenue Today</string>
+    <string name="pending_orders">Pending Orders</string>
+    <string name="menu_items_count">Menu Items</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="manage_menu">Manage Menu Items</string>
+    <string name="view_all_orders">View All Orders</string>
+    <string name="update_inventory">Update Inventory</string>
+    <string name="view_reports">View Reports</string>
+    <string name="recent_orders">Recent Orders</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_cart">Cart</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_profile">Profile</string>
+
+    <string name="category_all">All</string>
+    <string name="category_snacks">Snacks</string>
+    <string name="category_meals">Meals</string>
+    <string name="category_beverages">Beverages</string>
+    <string name="category_desserts">Desserts</string>
+    <string name="add_to_cart">+ Add</string>
+    <string name="item_added">Added to cart</string>
+
+    <string name="my_cart">My Cart</string>
+    <string name="cart_empty">Your cart is empty</string>
+    <string name="browse_menu">Browse Menu</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="delivery">Delivery</string>
+    <string name="free">Free</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="place_order">Place Order</string>
+
+    <string name="order_placed">Order Placed!</string>
+    <string name="preparing_food">Your food is being prepared</string>
+    <string name="payment_mode">Payment Mode</string>
+    <string name="cash_on_pickup">Cash on Pickup</string>
+    <string name="track_order">Track Order</string>
+    <string name="back_to_menu">Back to Menu</string>
+
+    <string name="order_status">Order Status</string>
+    <string name="status_placed">Order Placed</string>
+    <string name="status_preparing">Preparing</string>
+    <string name="status_ready">Ready for Pickup</string>
+    <string name="status_completed">Completed</string>
+    <string name="est_time">Estimated time: ~15 minutes</string>
+    <string name="back_to_home">Back to Home</string>
+
+    <string name="my_orders">My Orders</string>
+    <string name="help_support">Help &amp; Support</string>
+    <string name="about_app">About App</string>
+    <string name="logout">Logout</string>
+
+    <string name="error_empty_field">Field cannot be empty</string>
+    <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_short_password">Password too short</string>
+    <string name="error_invalid_admin_code">Invalid admin code</string>
+    <string name="error_phone">Enter 10 digit number</string>
+    <string name="error_mismatch_password">Passwords do not match</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="account_created">Account created! Please login.</string>
+    <string name="currency_format">₹%1$d</string>
+</resources>

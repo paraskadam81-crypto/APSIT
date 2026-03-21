@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F4F0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- TOOLBAR -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#1B4332"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="#FFFFFF"
+                android:rotation="180"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Inventory Management"
+                android:textColor="#D4A017"
+                android:textSize="18sp"
+                android:fontFamily="serif"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- LOW STOCK ALERT BANNER -->
+        <LinearLayout
+            android:id="@+id/lowStockBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF3CD"
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:background="#D4A017"
+                android:layout_marginEnd="12dp" />
+            <TextView
+                android:id="@+id/tvLowStockAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠ items are running low — tap to restock"
+                android:textColor="#856404"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- SUMMARY ROW -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+            <TextView
+                android:id="@+id/tvTotalItems"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_admin_card"
+                android:padding="8dp"
+                android:text="Total: 0"
+                android:textColor="#5A5A5A"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp" />
+            <TextView
+                android:id="@+id/tvLowStockCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_admin_card"
+                android:padding="8dp"
+                android:text="Low Stock: 0"
+                android:textColor="#C0392B"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp" />
+            <TextView
+                android:id="@+id/tvCategoriesCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_admin_card"
+                android:padding="8dp"
+                android:text="Categories: 4"
+                android:textColor="#1B4332"
+                android:textSize="13sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- FIXED TABLE HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1B4332"
+            android:paddingVertical="10dp"
+            android:layout_marginHorizontal="16dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="3" android:text="Item" android:textColor="#F0C040" android:gravity="center" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Stock" android:textColor="#F0C040" android:gravity="center" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Min" android:textColor="#F0C040" android:gravity="center" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Status" android:textColor="#F0C040" android:gravity="center" android:textSize="12sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- RECYCLER VIEW -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvInventory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_admin_card" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <!-- FOOTER ACTION -->
+        <Button
+            android:id="@+id/btnRestockAll"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_margin="16dp"
+            android:text="Restock All Low Items"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_action_btn" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddInventory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="#D4A017"
+        app:tint="#FFFFFF" />
+
+</RelativeLayout>

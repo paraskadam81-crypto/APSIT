@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:background="@drawable/bg_status_inactive"
+    android:gravity="center"
+    android:text="Status"
+    android:textColor="#5A5A5A"
+    android:textSize="10sp"
+    android:clickable="true"
+    android:focusable="true" />

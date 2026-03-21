@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "720029991165",
+    "firebase_url": "https://apsit-canteen-2ea91-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "apsit-canteen-2ea91",
+    "storage_bucket": "apsit-canteen-2ea91.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720029991165:android:72e6aaa9cda692fb03be94",
+        "android_client_info": {
+          "package_name": "com.company.apsitcanteen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEI65ai-HuEoyofo17HikE4Q0ccBcPymI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720029991165:android:641d11f990f1546003be94",
+        "android_client_info": {
+          "package_name": "com.example.apsitcanteen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEI65ai-HuEoyofo17HikE4Q0ccBcPymI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

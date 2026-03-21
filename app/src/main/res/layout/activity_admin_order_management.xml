@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F0F4F0">
+
+    <!-- TOOLBAR -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#1B4332"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#FFFFFF"
+            android:rotation="180"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Order Management"
+            android:textColor="#D4A017"
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- SEARCH BOX -->
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_admin_input"
+        android:hint="Search by Order ID or name..."
+        android:paddingHorizontal="16dp"
+        android:textSize="14sp"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="12dp"
+        android:maxLines="1"
+        android:inputType="text" />
+
+    <!-- FILTER CHIPS -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingBottom="8dp">
+        <LinearLayout
+            android:id="@+id/filterContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp" />
+    </HorizontalScrollView>
+
+    <!-- SUMMARY STRIP -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/tvCountPending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_pending"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="0 Pending"
+            android:textColor="#856404"
+            android:textSize="11sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvCountPreparing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_preparing"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="0 Preparing"
+            android:textColor="#0C5460"
+            android:textSize="11sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvCountReady"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_ready"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="0 Ready"
+            android:textColor="#155724"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- RECYCLER VIEW -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOrders"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp"
+            android:clipToPadding="false" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No orders found"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>
