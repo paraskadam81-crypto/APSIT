@@ -15,9 +15,11 @@ import com.example.apsitcanteen.adapters.AdminInventoryAdapter;
 import com.example.apsitcanteen.admin.InventoryItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,20 +129,44 @@ public class AdminInventoryActivity extends AppCompatActivity {
                     String val = etStock.getText().toString();
                     if (!val.isEmpty()) {
                         int newStock = Integer.parseInt(val);
-                        db.collection("inventory").document(item.getId())
-                                .update("currentStock", newStock)
-                                .addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+                        updateStockAndAvailability(item, newStock);
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
+    private void updateStockAndAvailability(InventoryItem item, int newStock) {
+        WriteBatch batch = db.batch();
+        DocumentReference invRef = db.collection("inventory").document(item.getId());
+        batch.update(invRef, "currentStock", newStock);
+
+        if (newStock > 0) {
+            // Re-enable in menu if stock > 0
+            db.collection("menu").whereEqualTo("name", item.getItemName()).get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            WriteBatch innerBatch = db.batch();
+                            innerBatch.update(invRef, "currentStock", newStock);
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                innerBatch.update(doc.getReference(), "available", true);
+                            }
+                            innerBatch.commit().addOnFailureListener(e -> 
+                                    Toast.makeText(this, "Stock updated, but menu update failed", Toast.LENGTH_SHORT).show());
+                        } else {
+                            db.collection("inventory").document(item.getId()).update("currentStock", newStock);
+                        }
+                    });
+        } else {
+            db.collection("inventory").document(item.getId()).update("currentStock", newStock);
+        }
+    }
+
     private void restockAllLowItems() {
         for (InventoryItem item : inventoryList) {
             if (item.getCurrentStock() < item.getMinStock()) {
                 int newStock = item.getMinStock() + 10;
-                db.collection("inventory").document(item.getId()).update("currentStock", newStock);
+                updateStockAndAvailability(item, newStock);
             }
         }
         Snackbar.make(rootLayout, "Restock command sent", Snackbar.LENGTH_SHORT).show();

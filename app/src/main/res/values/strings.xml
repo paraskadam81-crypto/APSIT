@@ -94,4 +94,10 @@
     <string name="coming_soon">Coming soon</string>
     <string name="account_created">Account created! Please login.</string>
     <string name="currency_format">₹%1$d</string>
+
+    <string name="error_insufficient_stock">Only %1$d %2$s available. Please reduce quantity.</string>
+    <string name="error_out_of_stock">%1$s is out of stock.</string>
+    <string name="error_order_failed">Order failed, please try again.</string>
+    <string name="dialog_unavailable_title">Items Unavailable</string>
+    <string name="btn_ok">OK</string>
 </resources>
