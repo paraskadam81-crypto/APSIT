@@ -281,7 +281,7 @@
                 android:layout_marginTop="24dp"
                 android:fontFamily="serif"
                 android:text="Orders by Status"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -304,7 +304,7 @@
                     android:backgroundTint="@color/status_pending_tint">
 
                     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgePending" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pending" android:background="@drawable/bg_badge_pending" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_pending"/>
+                        <TextView android:id="@+id/badgePending" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pending" android:background="@drawable/bg_badge_pending" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/white"/>
                         <TextView android:id="@+id/tvPendingCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
                     </RelativeLayout>
                     <ProgressBar android:id="@+id/pbPending" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_pending" android:progressBackgroundTint="#D8F3DC" />
@@ -320,7 +320,7 @@
                     android:backgroundTint="@color/status_preparing_tint">
 
                     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgePreparing" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Preparing" android:background="@drawable/bg_badge_preparing" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_preparing"/>
+                        <TextView android:id="@+id/badgePreparing" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Preparing" android:background="@drawable/bg_badge_preparing" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/white"/>
                         <TextView android:id="@+id/tvPreparingCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
                     </RelativeLayout>
                     <ProgressBar android:id="@+id/pbPreparing" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_preparing" android:progressBackgroundTint="#D8F3DC" />
@@ -336,7 +336,7 @@
                     android:backgroundTint="@color/status_ready_tint">
 
                     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgeReady" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ready" android:background="@drawable/bg_badge_ready" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_ready"/>
+                        <TextView android:id="@+id/badgeReady" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ready" android:background="@drawable/bg_badge_ready" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/white"/>
                         <TextView android:id="@+id/tvReadyCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
                     </RelativeLayout>
                     <ProgressBar android:id="@+id/pbReady" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_ready" android:progressBackgroundTint="#D8F3DC" />
@@ -352,7 +352,7 @@
                     android:backgroundTint="@color/status_completed_tint">
 
                     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgeCompleted" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Completed" android:background="@drawable/bg_badge_completed" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_completed"/>
+                        <TextView android:id="@+id/badgeCompleted" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Completed" android:background="@drawable/bg_badge_completed" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/white"/>
                         <TextView android:id="@+id/tvCompletedCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
                     </RelativeLayout>
                     <ProgressBar android:id="@+id/pbCompleted" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_completed" android:progressBackgroundTint="#D8F3DC" />
@@ -558,7 +558,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="serif"
                     android:text="Recent Orders"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorTextPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 

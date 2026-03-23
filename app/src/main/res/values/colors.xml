@@ -14,14 +14,14 @@
     <color name="status_pending">#FFA500</color>
     <color name="status_preparing">#2196F3</color>
     <color name="status_ready">#4CAF50</color>
-    <color name="status_completed">#1B4332</color>
+    <color name="status_completed">#2E7D32</color>
     <color name="status_cancelled">#F44336</color>
 
-    <!-- Status Tints (8% opacity) -->
+    <!-- Status Tints -->
     <color name="status_pending_tint">#14FFA500</color>
     <color name="status_preparing_tint">#142196F3</color>
     <color name="status_ready_tint">#144CAF50</color>
-    <color name="status_completed_tint">#141B4332</color>
+    <color name="status_completed_tint">#E8F5E9</color>
     <color name="status_cancelled_tint">#14F44336</color>
 
     <color name="backgroundColor">#F8F5EF</color>
