@@ -14,6 +14,9 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/backgroundColor</item>
 
+        <!-- Custom Attributes -->
+        <item name="tintColor">@color/colorPrimary</item>
+
         <!-- Typography: Using system default sans-serif -->
         <item name="android:fontFamily">sans-serif</item>
     </style>
