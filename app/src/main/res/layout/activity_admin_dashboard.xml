@@ -1,101 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/admin_background"
     tools:context=".AdminDashboardActivity">
-
-    <!-- Header Section -->
-    <ImageView
-        android:id="@+id/ivHeaderBg"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/header_background"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="24dp">
+        android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp">
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
 
-            <!-- Toolbar/Header Content -->
-            <ImageView
-                android:id="@+id/ivAdminAvatar"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="24dp"
-                android:src="@drawable/ic_profile"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
+            <!-- HEADER SECTION -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tvAdminTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:fontFamily="serif"
-                android:text="Admin Dashboard"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/tvCanteenSubtitle"
-                app:layout_constraintStart_toEndOf="@id/ivAdminAvatar"
-                app:layout_constraintTop_toTopOf="@id/ivAdminAvatar"
-                app:layout_constraintVertical_chainStyle="packed" />
+                <View
+                    android:id="@+id/ivHeaderBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="@drawable/header_background" />
 
-            <TextView
-                android:id="@+id/tvCanteenSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="APSIT Canteen"
-                android:textColor="#B3FFFFFF"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/ivAdminAvatar"
-                app:layout_constraintStart_toStartOf="@id/tvAdminTitle"
-                app:layout_constraintTop_toBottomOf="@id/tvAdminTitle" />
+                <!-- Simple diagonal pattern simulation (Top-right corner) -->
+                <View
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="end|top"
+                    android:alpha="0.1"
+                    android:rotation="45"
+                    android:background="@color/admin_primary_light" />
 
-            <ImageView
-                android:id="@+id/btnLogout"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@android:drawable/ic_lock_power_off"
-                app:layout_constraintBottom_toBottomOf="@id/ivAdminAvatar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/ivAdminAvatar"
-                app:tint="@color/white" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="24dp">
 
-            <!-- Stats Grid Section -->
+                    <TextView
+                        android:id="@+id/ivAdminAvatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_avatar_gold"
+                        android:gravity="center"
+                        android:text="A"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvAdminTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Admin Dashboard"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivAdminAvatar" />
+
+                    <TextView
+                        android:id="@+id/tvCanteenSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="APSIT Canteen"
+                        android:textColor="@color/admin_primary_light"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvAdminTitle" />
+
+                    <ImageView
+                        android:id="@+id/btnLogout"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:src="@android:drawable/ic_lock_power_off"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/ivAdminAvatar"
+                        app:tint="@color/white" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </FrameLayout>
+
+            <!-- STAT CARDS (2x2 grid) -->
             <GridLayout
                 android:id="@+id/statsGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="-40dp"
+                android:layout_marginHorizontal="10dp"
                 android:columnCount="2"
-                android:rowCount="2"
-                app:layout_constraintTop_toBottomOf="@id/ivAdminAvatar">
+                android:rowCount="2">
 
                 <!-- Today's Orders -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_columnWeight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp">
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -103,11 +121,18 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_cart"
-                            app:tint="@color/colorAccent" />
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/circle_avatar_gold"
+                            android:backgroundTint="@color/tint_amber">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_cart"
+                                app:tint="@color/icon_amber" />
+                        </FrameLayout>
 
                         <TextView
                             android:id="@+id/tvTodayOrders"
@@ -115,33 +140,33 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="0"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="28sp"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="32sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Today's Orders"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="13sp" />
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="4dp"
+                        android:layout_height="3dp"
                         android:layout_gravity="bottom"
-                        android:background="@color/colorAccent" />
+                        android:background="@color/icon_amber" />
                 </androidx.cardview.widget.CardView>
 
                 <!-- Today's Revenue -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_columnWeight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp">
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -149,11 +174,18 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_revenue"
-                            app:tint="@color/successGreen" />
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/circle_avatar_gold"
+                            android:backgroundTint="@color/tint_green">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_revenue"
+                                app:tint="@color/icon_green" />
+                        </FrameLayout>
 
                         <TextView
                             android:id="@+id/tvTodayRevenue"
@@ -161,33 +193,33 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="₹0"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="28sp"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="32sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Today's Revenue"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="13sp" />
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="4dp"
+                        android:layout_height="3dp"
                         android:layout_gravity="bottom"
-                        android:background="@color/successGreen" />
+                        android:background="@color/icon_green" />
                 </androidx.cardview.widget.CardView>
 
                 <!-- Pending Orders -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_columnWeight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp">
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -195,11 +227,18 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_hourglass"
-                            app:tint="@color/status_pending" />
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/circle_avatar_gold"
+                            android:backgroundTint="@color/tint_orange">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_hourglass"
+                                app:tint="@color/icon_orange" />
+                        </FrameLayout>
 
                         <TextView
                             android:id="@+id/tvPendingOrders"
@@ -207,33 +246,33 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="0"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="28sp"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="32sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Pending Orders"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="13sp" />
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="4dp"
+                        android:layout_height="3dp"
                         android:layout_gravity="bottom"
-                        android:background="@color/status_pending" />
+                        android:background="@color/icon_orange" />
                 </androidx.cardview.widget.CardView>
 
                 <!-- Low Stock Items -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_columnWeight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp">
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -241,11 +280,18 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_warning"
-                            app:tint="@color/status_cancelled" />
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/circle_avatar_gold"
+                            android:backgroundTint="@color/tint_red">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_warning"
+                                app:tint="@color/icon_red" />
+                        </FrameLayout>
 
                         <TextView
                             android:id="@+id/tvLowStock"
@@ -253,324 +299,445 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="0"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="28sp"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="32sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Low Stock Items"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="13sp" />
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="4dp"
+                        android:layout_height="3dp"
                         android:layout_gravity="bottom"
-                        android:background="@color/status_cancelled" />
+                        android:background="@color/icon_red" />
                 </androidx.cardview.widget.CardView>
             </GridLayout>
 
-            <!-- Orders By Status Section -->
+            <!-- ORDERS BY STATUS SECTION -->
             <TextView
                 android:id="@+id/tvStatusTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:fontFamily="serif"
+                android:layout_marginHorizontal="16dp"
                 android:text="Orders by Status"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/statsGrid" />
+                android:textColor="@color/admin_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <LinearLayout
-                android:id="@+id/statusList"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/tvStatusTitle">
+                android:layout_marginHorizontal="16dp"
+                app:cardBackgroundColor="@color/admin_card_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp">
 
                 <LinearLayout
+                    android:id="@+id/statusList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/status_row_background"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:backgroundTint="@color/status_pending_tint">
+                    android:orientation="vertical">
 
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgePending" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pending" android:background="@drawable/bg_badge_pending" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_pending"/>
-                        <TextView android:id="@+id/tvPendingCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
-                    </RelativeLayout>
-                    <ProgressBar android:id="@+id/pbPending" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_pending" android:progressBackgroundTint="#D8F3DC" />
+                    <!-- Pending Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/status_row_pending" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Pending"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/tvPendingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/bg_badge_pending"
+                            android:backgroundTint="@color/pill_pending_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="2dp"
+                            android:text="0"
+                            android:textColor="@color/pill_pending_text"
+                            android:textStyle="bold" />
+                        <!-- Keeping ProgressBars for Logic Compatibility -->
+                        <ProgressBar android:id="@+id/pbPending" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/admin_divider" android:layout_marginHorizontal="16dp" />
+
+                    <!-- Accepted/Preparing Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/status_row_preparing" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Preparing"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/tvPreparingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/bg_badge_preparing"
+                            android:backgroundTint="@color/pill_preparing_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="2dp"
+                            android:text="0"
+                            android:textColor="@color/pill_preparing_text"
+                            android:textStyle="bold" />
+                        <ProgressBar android:id="@+id/pbPreparing" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/admin_divider" android:layout_marginHorizontal="16dp" />
+
+                    <!-- Ready Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/status_row_ready" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Ready"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/tvReadyCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/bg_badge_ready"
+                            android:backgroundTint="@color/pill_ready_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="2dp"
+                            android:text="0"
+                            android:textColor="@color/pill_ready_text"
+                            android:textStyle="bold" />
+                        <ProgressBar android:id="@+id/pbReady" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/admin_divider" android:layout_marginHorizontal="16dp" />
+
+                    <!-- Completed Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/status_row_completed" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Completed"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/tvCompletedCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/bg_badge_completed"
+                            android:backgroundTint="@color/pill_completed_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="2dp"
+                            android:text="0"
+                            android:textColor="@color/pill_completed_text"
+                            android:textStyle="bold" />
+                        <ProgressBar android:id="@+id/pbCompleted" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                    </LinearLayout>
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/status_row_background"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:backgroundTint="@color/status_preparing_tint">
+            <!-- QUICK ACCESS SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="Quick Access"
+                android:textColor="@color/admin_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgePreparing" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Preparing" android:background="@drawable/bg_badge_preparing" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_preparing"/>
-                        <TextView android:id="@+id/tvPreparingCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
-                    </RelativeLayout>
-                    <ProgressBar android:id="@+id/pbPreparing" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_preparing" android:progressBackgroundTint="#D8F3DC" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/status_row_background"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:backgroundTint="@color/status_ready_tint">
-
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgeReady" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ready" android:background="@drawable/bg_badge_ready" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_ready"/>
-                        <TextView android:id="@+id/tvReadyCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
-                    </RelativeLayout>
-                    <ProgressBar android:id="@+id/pbReady" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_ready" android:progressBackgroundTint="#D8F3DC" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/status_row_background"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:backgroundTint="@color/status_completed_tint">
-
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:id="@+id/badgeCompleted" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Completed" android:background="@drawable/bg_badge_completed" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:textSize="12sp" android:textColor="@color/status_completed"/>
-                        <TextView android:id="@+id/tvCompletedCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0" android:textStyle="bold" android:textColor="@color/colorTextPrimary"/>
-                    </RelativeLayout>
-                    <ProgressBar android:id="@+id/pbCompleted" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp" android:progressTint="@color/status_completed" android:progressBackgroundTint="#D8F3DC" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Quick Access Grid -->
             <GridLayout
                 android:id="@+id/quickAccessGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:columnCount="2"
-                app:layout_constraintTop_toBottomOf="@id/statusList">
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="10dp"
+                android:columnCount="2">
 
-                <!-- Menu Management -->
+                <!-- Menu Items -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardMenuManagement"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
+                    android:layout_height="120dp"
                     android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:foreground="@drawable/ripple_card"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
                         <View
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:background="@drawable/circle_background"
-                            android:backgroundTint="@color/colorAccent" />
-
+                            android:id="@+id/iconContainerMenu"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/gradient_circle_amber" />
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="-42dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="17dp"
                             android:src="@drawable/ic_restaurant_menu"
                             app:tint="@color/white" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_below="@id/iconContainerMenu"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="8dp"
                             android:text="Menu Items"
-                            android:textColor="@color/colorTextPrimary"
+                            android:textColor="@color/admin_text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:text="→"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Order Management -->
+                <!-- Orders -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardOrderManagement"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
+                    android:layout_height="120dp"
                     android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:foreground="@drawable/ripple_card"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
                         <View
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:background="@drawable/circle_background"
-                            android:backgroundTint="@color/successGreen" />
-
+                            android:id="@+id/iconContainerOrders"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/gradient_circle_green" />
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="-42dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="17dp"
                             android:src="@drawable/ic_receipt_long"
                             app:tint="@color/white" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_below="@id/iconContainerOrders"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="8dp"
                             android:text="Orders"
-                            android:textColor="@color/colorTextPrimary"
+                            android:textColor="@color/admin_text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:text="→"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Inventory -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardInventory"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
+                    android:layout_height="120dp"
                     android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:foreground="@drawable/ripple_card"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
                         <View
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:background="@drawable/circle_background"
-                            android:backgroundTint="#009688" />
-
+                            android:id="@+id/iconContainerInventory"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/gradient_circle_teal" />
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="-42dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="17dp"
                             android:src="@drawable/ic_inventory"
                             app:tint="@color/white" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_below="@id/iconContainerInventory"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="8dp"
                             android:text="Inventory"
-                            android:textColor="@color/colorTextPrimary"
+                            android:textColor="@color/admin_text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:text="→"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Reports -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardReports"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
+                    android:layout_height="120dp"
                     android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:foreground="@drawable/ripple_card"
+                    app:cardBackgroundColor="@color/admin_card_bg"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
                         <View
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:background="@drawable/circle_background"
-                            android:backgroundTint="#2196F3" />
-
+                            android:id="@+id/iconContainerReports"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/gradient_circle_blue" />
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="-42dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="17dp"
                             android:src="@drawable/ic_bar_chart"
                             app:tint="@color/white" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_below="@id/iconContainerReports"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="8dp"
                             android:text="Reports"
-                            android:textColor="@color/colorTextPrimary"
+                            android:textColor="@color/admin_text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:text="→"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
                 </androidx.cardview.widget.CardView>
             </GridLayout>
 
-            <!-- Recent Orders Section -->
+            <!-- RECENT ORDERS SECTION -->
             <RelativeLayout
                 android:id="@+id/rlRecentTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                app:layout_constraintTop_toBottomOf="@id/quickAccessGrid">
-
+                android:paddingHorizontal="16dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="serif"
                     android:text="Recent Orders"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="16sp"
+                    android:textColor="@color/admin_text_primary"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/tvViewAllOrders"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="View All"
-                    android:textColor="@color/colorAccentDark"
+                    android:textColor="@color/admin_accent"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </RelativeLayout>
@@ -580,10 +747,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/rlRecentTitle" />
+                android:paddingHorizontal="16dp"
+                android:orientation="vertical" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
