@@ -52,8 +52,8 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@drawable/bg_outlined_gold_button"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_food_placeholder"
+                android:contentDescription="Decrease quantity"
+                android:src="@drawable/ic_minus"
                 app:tint="@color/colorAccent" />
 
             <TextView
@@ -71,8 +71,8 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@drawable/bg_gold_button"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_food_placeholder"
+                android:contentDescription="Increase quantity"
+                android:src="@drawable/ic_add"
                 app:tint="@color/colorTextOnAccent" />
         </LinearLayout>
 
@@ -83,8 +83,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_food_placeholder"
+            android:contentDescription="Remove item"
+            android:src="@drawable/ic_remove"
             app:tint="@color/colorAccent" />
 
     </RelativeLayout>
