@@ -3,6 +3,8 @@ package com.example.apsitcanteen.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,18 +43,26 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         holder.tvStatus.setText(order.getStatus());
 
         String status = order.getStatus() != null ? order.getStatus() : "Pending";
+        
+        // Reset animation
+        holder.tvStatus.clearAnimation();
+
         switch (status) {
             case "Pending":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_pending);
+                startPulseAnimation(holder.tvStatus);
                 break;
             case "Accepted":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_accepted);
+                startPulseAnimation(holder.tvStatus);
                 break;
             case "Preparing":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_preparing);
+                startPulseAnimation(holder.tvStatus);
                 break;
             case "Ready":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_ready);
+                startPulseAnimation(holder.tvStatus);
                 break;
             case "Completed":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_completed);
@@ -74,6 +84,11 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             }
         }
         holder.tvItemsSummary.setText(itemsSummary.toString());
+    }
+
+    private void startPulseAnimation(View view) {
+        Animation pulse = AnimationUtils.loadAnimation(view.getContext(), R.anim.pulse);
+        view.startAnimation(pulse);
     }
 
     @Override

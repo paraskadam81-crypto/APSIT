@@ -3,35 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    android:layout_margin="10dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_white_card"
         android:orientation="vertical">
 
-        <!-- Gold Accent Bar -->
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/colorAccent" />
+            android:layout_height="160dp">
 
-        <ImageView
-            android:id="@+id/ivFood"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_food_placeholder"
-            android:contentDescription="@null" />
+            <ImageView
+                android:id="@+id/ivFood"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_food_placeholder" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_overlay" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="12dp"
+                android:background="@drawable/bg_price_tag"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/tvFoodName"
@@ -40,47 +56,31 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextPrimary"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="4dp"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
+                android:minLines="2"
                 android:textColor="@color/colorTextSecondary"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
-            <RelativeLayout
+            <Button
+                android:id="@+id/btnAdd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnAdd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/bg_add_button"
-                    android:minWidth="70dp"
-                    android:paddingHorizontal="12dp"
-                    android:text="+ ADD"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="12sp" />
-            </RelativeLayout>
+                android:layout_height="45dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_add_button_modern"
+                android:text="+ ADD"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

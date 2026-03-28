@@ -1,9 +1,14 @@
 package com.example.apsitcanteen.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +22,7 @@ import com.example.apsitcanteen.adapters.MenuAdapter;
 import com.example.apsitcanteen.models.FoodItem;
 import com.example.apsitcanteen.utils.CartManager;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -30,11 +36,14 @@ public class HomeFragment extends Fragment {
     private List<FoodItem> fullMenuList = new ArrayList<>();
     private TextView chipAll, chipSnacks, chipMeals, chipBeverages, chipDesserts;
     private ProgressBar progressBar;
-    private TextView tvEmpty;
+    private TextView tvEmpty, tvStudentName;
+    private EditText etSearch;
+    private View btnCartContainer;
     
     private FirebaseFirestore db;
     private ListenerRegistration menuListener;
     private String currentCategory = "All";
+    private String searchQuery = "";
 
     @Nullable
     @Override
@@ -51,12 +60,44 @@ public class HomeFragment extends Fragment {
         chipDesserts = view.findViewById(R.id.chipDesserts);
         progressBar = view.findViewById(R.id.progressBar);
         tvEmpty = view.findViewById(R.id.tvEmpty);
+        tvStudentName = view.findViewById(R.id.tvStudentName);
+        etSearch = view.findViewById(R.id.etSearch);
+        btnCartContainer = view.findViewById(R.id.btnCartContainer);
 
         setupRecyclerView();
         setupCategoryFilters();
+        setupSearch();
+        loadStudentName();
         listenToMenuUpdates();
 
         return view;
+    }
+
+    private void loadStudentName() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid != null) {
+            db.collection("students").document(uid).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String name = documentSnapshot.getString("name");
+                            if (name != null) tvStudentName.setText(name);
+                        }
+                    });
+        }
+    }
+
+    private void setupSearch() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchQuery = s.toString().toLowerCase().trim();
+                applyFilter();
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 
     private void listenToMenuUpdates() {
@@ -90,9 +131,15 @@ public class HomeFragment extends Fragment {
                 return;
             }
             CartManager.getInstance().addItem(foodItem);
+            
+            // Cart Bounce Animation
+            Animation bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce_button);
+            btnCartContainer.startAnimation(bounce);
+
             if (getView() != null) {
                 Snackbar.make(getView(), "Item added to cart", Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(getResources().getColor(R.color.successGreen))
+                        .setAnchorView(getActivity().findViewById(R.id.bottom_navigation_container))
+                        .setBackgroundTint(getResources().getColor(R.color.colorPrimary))
                         .setTextColor(getResources().getColor(R.color.white))
                         .show();
             }
@@ -111,14 +158,17 @@ public class HomeFragment extends Fragment {
 
     private void updateFilterUI(TextView selectedChip) {
         resetChips();
-        selectedChip.setBackgroundResource(R.drawable.bg_gold_chip_selected);
-        selectedChip.setTextColor(getResources().getColor(R.color.colorTextOnAccent));
+        selectedChip.setBackgroundResource(R.drawable.bg_category_chip_selected);
+        selectedChip.setTextColor(getResources().getColor(R.color.white));
     }
 
     private void applyFilter() {
         List<FoodItem> filteredList = new ArrayList<>();
         for (FoodItem item : fullMenuList) {
-            if (currentCategory.equals("All") || item.getCategory().equalsIgnoreCase(currentCategory)) {
+            boolean matchesCategory = currentCategory.equals("All") || item.getCategory().equalsIgnoreCase(currentCategory);
+            boolean matchesSearch = searchQuery.isEmpty() || item.getName().toLowerCase().contains(searchQuery);
+            
+            if (matchesCategory && matchesSearch) {
                 filteredList.add(item);
             }
         }
@@ -130,7 +180,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void resetChips() {
-        int unselectedBg = R.drawable.bg_gold_chip_unselected;
+        int unselectedBg = R.drawable.bg_category_chip_unselected;
         int unselectedText = getResources().getColor(R.color.colorTextSecondary);
 
         chipAll.setBackgroundResource(unselectedBg);
