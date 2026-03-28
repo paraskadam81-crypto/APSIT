@@ -2,6 +2,7 @@ package com.example.apsitcanteen;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
 
     private TextView tvStatusBadge;
     private LinearLayout statusButtonContainer;
+    private LinearLayout timelineContainer;
     private View rootLayout;
     private ProgressBar progressBar;
 
@@ -36,6 +38,7 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         rootLayout = findViewById(R.id.rootLayout);
         progressBar = findViewById(R.id.progressBar);
+        timelineContainer = findViewById(R.id.timelineContainer);
         orderId = getIntent().getStringExtra("orderId");
 
         if (orderId == null) {
@@ -55,11 +58,34 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
             order = value.toObject(Order.class);
             order.setOrderId(value.getId());
 
+            calculateAndSyncEstimatedTime();
             setupToolbar();
             fillStudentInfo();
             fillItemsTable();
             setupStatusUpdateSection();
+            setupTimeline();
         });
+    }
+
+    private void calculateAndSyncEstimatedTime() {
+        if (order.getEstimatedTime() != null && !order.getEstimatedTime().isEmpty()) {
+            return; // Time already set
+        }
+
+        int estimatedMinutes;
+        double total = order.getTotalPrice();
+
+        if (total < 50) estimatedMinutes = 5;
+        else if (total < 100) estimatedMinutes = 10;
+        else if (total < 150) estimatedMinutes = 15;
+        else if (total < 200) estimatedMinutes = 20;
+        else estimatedMinutes = 25;
+
+        String timeString = estimatedMinutes + " mins";
+        db.collection("orders").document(orderId).update("estimatedTime", timeString)
+                .addOnFailureListener(e -> Log.e("AdminOrderDetail", "Failed to sync estimated time", e));
+        
+        order.setEstimatedTime(timeString);
     }
 
     private void setupToolbar() {
@@ -150,5 +176,62 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
             case "Completed": tv.setBackgroundResource(R.drawable.bg_badge_completed); break;
             default: tv.setBackgroundResource(R.drawable.bg_badge_cancelled); break;
         }
+    }
+
+    private void setupTimeline() {
+        timelineContainer.removeAllViews();
+        String currentStatus = order.getStatus();
+        
+        String[] stages = {"Order Placed", "Accepted", "Preparing", "Ready for Pickup", "Completed"};
+        String[] statusMapping = {"Pending", "Accepted", "Preparing", "Ready", "Completed"};
+
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        String orderTime = sdf.format(new Date(order.getTimestamp()));
+
+        for (int i = 0; i < stages.length; i++) {
+            addTimelineStep(stages[i], i == 0 ? orderTime : "", i, currentStatus, statusMapping);
+        }
+    }
+
+    private void addTimelineStep(String label, String time, int index, String currentStatus, String[] statusMapping) {
+        View stepView = getLayoutInflater().inflate(R.layout.layout_timeline_step, timelineContainer, false);
+        
+        TextView tvLabel = stepView.findViewById(R.id.tvLabel);
+        TextView tvTime = stepView.findViewById(R.id.tvTime);
+        View viewCircle = stepView.findViewById(R.id.viewCircle);
+        View viewLine = stepView.findViewById(R.id.viewLine);
+
+        tvLabel.setText(label);
+        
+        // Add estimated time to "Preparing" stage
+        if (label.equals("Preparing")) {
+            tvLabel.setText(label + " (" + order.getEstimatedTime() + ")");
+        }
+
+        if (time.isEmpty()) tvTime.setVisibility(View.GONE);
+        else tvTime.setText(time);
+
+        // Logic for highlighting active/completed stages
+        int currentStatusIndex = -1;
+        for (int i = 0; i < statusMapping.length; i++) {
+            if (statusMapping[i].equalsIgnoreCase(currentStatus)) {
+                currentStatusIndex = i;
+                break;
+            }
+        }
+
+        if (index <= currentStatusIndex) {
+            viewCircle.setBackgroundResource(R.drawable.bg_status_active);
+            tvLabel.setTextColor(Color.parseColor("#1B4332"));
+        } else {
+            viewCircle.setBackgroundResource(R.drawable.bg_status_inactive);
+            tvLabel.setTextColor(Color.parseColor("#5A5A5A"));
+        }
+
+        if (index == statusMapping.length - 1) {
+            viewLine.setVisibility(View.GONE);
+        }
+
+        timelineContainer.addView(stepView);
     }
 }

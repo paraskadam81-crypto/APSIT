@@ -11,6 +11,7 @@ public class Order {
     private double totalPrice;
     private String status; // Pending, Accepted, Preparing, Ready, Completed
     private long timestamp;
+    private String estimatedTime;
 
     public Order() {}
 
@@ -55,4 +56,7 @@ public class Order {
 
     public long getTimestamp() { return timestamp; }
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+    public String getEstimatedTime() { return estimatedTime; }
+    public void setEstimatedTime(String estimatedTime) { this.estimatedTime = estimatedTime; }
 }
