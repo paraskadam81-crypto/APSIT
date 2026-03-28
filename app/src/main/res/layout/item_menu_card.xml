@@ -72,12 +72,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/bg_gold_button"
-                    android:minWidth="60dp"
-                    android:paddingHorizontal="8dp"
-                    android:text="@string/add_to_cart"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextOnAccent"
+                    android:background="@drawable/bg_add_button"
+                    android:minWidth="70dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="+ ADD"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
                     android:textSize="12sp" />
             </RelativeLayout>
         </LinearLayout>

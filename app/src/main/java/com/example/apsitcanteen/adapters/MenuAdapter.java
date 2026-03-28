@@ -5,6 +5,8 @@ import android.graphics.ColorMatrixColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,6 +68,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             holder.itemView.setAlpha(1.0f);
             holder.ivFood.clearColorFilter();
             holder.btnAdd.setEnabled(true);
+            holder.btnAdd.setBackgroundResource(R.drawable.bg_add_button);
             holder.btnAdd.setText(R.string.add_to_cart);
         } else {
             holder.itemView.setAlpha(0.5f);
@@ -79,6 +82,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         
         holder.btnAdd.setOnClickListener(v -> {
             if (item.isAvailable()) {
+                // Add scale pop animation
+                Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.scale_pop);
+                v.startAnimation(animation);
+
                 listener.onAddClick(item);
             }
         });

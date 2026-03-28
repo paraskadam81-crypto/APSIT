@@ -42,21 +42,26 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
         String status = order.getStatus() != null ? order.getStatus() : "Pending";
         switch (status) {
-            case "Completed":
-                holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_completed);
-                break;
             case "Pending":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_pending);
                 break;
             case "Accepted":
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_accepted);
+                break;
             case "Preparing":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_preparing);
                 break;
             case "Ready":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_ready);
                 break;
-            default:
+            case "Completed":
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_completed);
+                break;
+            case "Cancelled":
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_cancelled);
+                break;
+            default:
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_pending);
                 break;
         }
 
