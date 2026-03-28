@@ -1,16 +1,24 @@
 package com.example.apsitcanteen;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.bumptech.glide.Glide;
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
 import com.example.apsitcanteen.models.FoodItem;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,6 +29,7 @@ import java.util.Map;
 public class AdminAddEditItemActivity extends AppCompatActivity {
 
     private static final String TAG = "AdminAddEditItem";
+    private static final int PICK_IMAGE_REQUEST = 1;
     private boolean isEditMode = false;
     private String itemId;
     private FirebaseFirestore db;
@@ -30,6 +39,8 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
     private Switch swAvailable;
     private TextInputLayout tilName, tilCategory, tilPrice, tilDescription, tilImageUrl;
     private ProgressBar progressBar;
+    private ImageView ivFoodImage;
+    private Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +67,15 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
             loadItemData();
         }
 
+        findViewById(R.id.cardPickImage).setOnClickListener(v -> openImagePicker());
+
         findViewById(R.id.btnSave).setOnClickListener(v -> {
             if (validateForm()) {
-                saveItem();
+                if (selectedImageUri != null) {
+                    uploadImageAndSave();
+                } else {
+                    saveItem();
+                }
             }
         });
 
@@ -72,6 +89,7 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
         actvCategory = findViewById(R.id.actvCategory);
         swAvailable = findViewById(R.id.swAvailable);
         etImageUrl = findViewById(R.id.etImageUrl);
+        ivFoodImage = findViewById(R.id.ivFoodImage);
 
         tilName = findViewById(R.id.tilItemName);
         tilCategory = findViewById(R.id.tilCategory);
@@ -79,6 +97,55 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
         tilDescription = findViewById(R.id.tilDescription);
         tilImageUrl = findViewById(R.id.tilImageUrl);
         progressBar = findViewById(R.id.progressBar);
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+            ivFoodImage.setImageURI(selectedImageUri);
+        }
+    }
+
+    private void uploadImageAndSave() {
+        progressBar.setVisibility(View.VISIBLE);
+        MediaManager.get().upload(selectedImageUri)
+                .unsigned("apsit_canteen")
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) {
+                        Log.d(TAG, "Upload started");
+                    }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {
+                    }
+
+                    @Override
+                    public void onSuccess(String requestId, Map resultData) {
+                        String imageUrl = (String) resultData.get("secure_url");
+                        etImageUrl.setText(imageUrl);
+                        saveItem();
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AdminAddEditItemActivity.this, "Upload failed: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) {
+                    }
+                }).dispatch();
     }
 
     private void loadItemData() {
@@ -94,6 +161,10 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
                         etDescription.setText(item.getDescription());
                         etImageUrl.setText(item.getImageUrl());
                         swAvailable.setChecked(item.isAvailable());
+
+                        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+                            Glide.with(this).load(item.getImageUrl()).placeholder(R.drawable.ic_food_placeholder).into(ivFoodImage);
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -138,7 +209,6 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
         String imageUrl = etImageUrl.getText().toString().trim();
         boolean isAvailable = swAvailable.isChecked();
 
-        // Using a Map for saving to ensure field names match what the app expects
         Map<String, Object> itemMap = new HashMap<>();
         itemMap.put("name", name);
         itemMap.put("description", description);
@@ -146,7 +216,7 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
         itemMap.put("price", price);
         itemMap.put("imageUrl", imageUrl);
         itemMap.put("available", isAvailable);
-        itemMap.put("stock", 50); // Default stock
+        itemMap.put("stock", 50);
 
         if (isEditMode) {
             db.collection("menu").document(itemId).set(itemMap)
@@ -164,8 +234,7 @@ public class AdminAddEditItemActivity extends AppCompatActivity {
             db.collection("menu").add(itemMap)
                     .addOnSuccessListener(documentReference -> {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(this, "Added successfully to collection: menu", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Document added with ID: " + documentReference.getId());
+                        Toast.makeText(this, "Added successfully", Toast.LENGTH_LONG).show();
                         finish();
                     })
                     .addOnFailureListener(e -> {

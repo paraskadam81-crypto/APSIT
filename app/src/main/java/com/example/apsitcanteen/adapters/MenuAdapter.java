@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.apsitcanteen.R;
 import com.example.apsitcanteen.models.FoodItem;
 import java.util.ArrayList;
@@ -48,6 +49,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         holder.tvDescription.setText(item.getDescription());
         holder.tvPrice.setText("₹" + (int)item.getPrice());
         
+        // Load image using Glide
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.ic_food_placeholder)
+                    .error(R.drawable.ic_food_placeholder)
+                    .centerCrop()
+                    .into(holder.ivFood);
+        } else {
+            holder.ivFood.setImageResource(R.drawable.ic_food_placeholder);
+        }
+
         // Handling availability: grey out if not available
         if (item.isAvailable()) {
             holder.itemView.setAlpha(1.0f);
