@@ -71,7 +71,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             holder.ivFood.clearColorFilter();
             holder.btnAdd.setEnabled(true);
             // holder.btnAdd.setBackgroundResource(R.drawable.bg_add_button_modern); // Commented out as it might not exist
-            holder.btnAdd.setText("+ ADD");
+            holder.btnAdd.setText("+ Add");
         } else {
             holder.itemView.setAlpha(0.5f);
             ColorMatrix matrix = new ColorMatrix();
