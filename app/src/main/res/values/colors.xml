@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Refined Deep Green + Gold Theme -->
-    <color name="colorPrimary">#2D6A4F</color>
-    <color name="colorPrimaryDark">#1B4332</color>
-    <color name="colorPrimaryLight">#40916C</color>
+    <color name="colorPrimary">#1B4332</color>
+    <color name="colorPrimaryDark">#081C15</color>
+    <color name="colorPrimaryLight">#2D6A4F</color>
+    <color name="colorAccent">#D4A017</color>
+    <color name="colorAccentDark">#B8860B</color>
+    <color name="colorBackground">#F8F4E1</color>
+    <color name="colorSurface">#FFFFFF</color>
 
-    <!-- Admin Dashboard Design Language -->
+    <!-- Design Language Colors -->
     <color name="admin_primary">#1B5E20</color>
     <color name="admin_primary_light">#A5D6A7</color>
     <color name="admin_accent">#F9A825</color>
@@ -15,50 +19,8 @@
     <color name="admin_text_secondary">#757575</color>
     <color name="admin_divider">#F0F0F0</color>
 
-    <!-- Stat Card Circle Backgrounds -->
-    <color name="stat_orders_bg">#FFF8E1</color>
-    <color name="stat_revenue_bg">#E8F5E9</color>
-    <color name="stat_pending_bg">#FFF3E0</color>
-    <color name="stat_low_stock_bg">#FFEBEE</color>
-
-    <!-- Stat Card Icon/Accent Colors -->
-    <color name="stat_orders_icon">#F9A825</color>
-    <color name="stat_revenue_icon">#2E7D32</color>
-    <color name="stat_pending_icon">#EF6C00</color>
-    <color name="stat_low_stock_icon">#C62828</color>
-
-    <!-- Pill Status Colors (Design Language) -->
-    <color name="pill_pending_bg">#FFF8E1</color>
-    <color name="pill_pending_text">#F9A825</color>
-
-    <color name="pill_preparing_bg">#E3F2FD</color>
-    <color name="pill_preparing_text">#1565C0</color>
-
-    <color name="pill_ready_bg">#E8F5E9</color>
-    <color name="pill_ready_text">#2E7D32</color>
-
-    <color name="pill_completed_bg">#E8F5E9</color>
-    <color name="pill_completed_text">#1B5E20</color>
-
-    <color name="pill_cancelled_bg">#FFEBEE</color>
-    <color name="pill_cancelled_text">#C62828</color>
-
-    <!-- Quick Access Gradients -->
-    <color name="grad_amber_start">#F9A825</color>
-    <color name="grad_amber_end">#FB8C00</color>
-    <color name="grad_green_start">#2E7D32</color>
-    <color name="grad_green_end">#1B5E20</color>
-    <color name="grad_teal_start">#00838F</color>
-    <color name="grad_teal_end">#006064</color>
-    <color name="grad_blue_start">#1565C0</color>
-    <color name="grad_blue_end">#0D47A1</color>
-
-    <!-- Legacy/Generic Colors -->
-    <color name="backgroundColor">#F1F5F0</color>
-    <color name="colorBackground">#F1F5F0</color>
+    <color name="backgroundColor">#F8F4E1</color>
     <color name="surfaceColor">#FFFFFF</color>
-    <color name="colorAccent">#F0C040</color>
-    <color name="colorAccentDark">#B8860B</color>
     <color name="colorTextOnAccent">#000000</color>
     <color name="colorTextPrimary">#1A1A1A</color>
     <color name="colorTextSecondary">#757575</color>
@@ -73,12 +35,48 @@
     <color name="colorError">#C62828</color>
     <color name="errorRed">#D32F2F</color>
     <color name="successGreen">#388E3C</color>
-    <color name="cardBorderGold">#F0C040</color>
 
-    <!-- Status Colors -->
+    <!-- Card Borders -->
+    <color name="cardBorderGold">#D4A017</color>
+
+    <!-- Stat Card Circle Backgrounds -->
+    <color name="stat_orders_bg">#FFF8E1</color>
+    <color name="stat_revenue_bg">#E8F5E9</color>
+    <color name="stat_pending_bg">#FFF3E0</color>
+    <color name="stat_low_stock_bg">#FFEBEE</color>
+
+    <!-- Stat Card Icon/Accent Colors -->
+    <color name="stat_orders_icon">#F9A825</color>
+    <color name="stat_revenue_icon">#2E7D32</color>
+    <color name="stat_pending_icon">#EF6C00</color>
+    <color name="stat_low_stock_icon">#C62828</color>
+
+    <!-- Pill Status Colors -->
+    <color name="pill_pending_bg">#FFF8E1</color>
+    <color name="pill_pending_text">#F9A825</color>
+    <color name="pill_preparing_bg">#E3F2FD</color>
+    <color name="pill_preparing_text">#1565C0</color>
+    <color name="pill_ready_bg">#E8F5E9</color>
+    <color name="pill_ready_text">#2E7D32</color>
+    <color name="pill_completed_bg">#E8F5E9</color>
+    <color name="pill_completed_text">#1B5E20</color>
+    <color name="pill_cancelled_bg">#FFEBEE</color>
+    <color name="pill_cancelled_text">#C62828</color>
+
+    <!-- Status Indicator Colors -->
     <color name="status_pending">#F9A825</color>
     <color name="status_preparing">#1565C0</color>
     <color name="status_ready">#2E7D32</color>
     <color name="status_completed">#1B5E20</color>
     <color name="status_cancelled">#C62828</color>
+
+    <!-- Gradient Colors -->
+    <color name="grad_amber_start">#FFD54F</color>
+    <color name="grad_amber_end">#FF8F00</color>
+    <color name="grad_blue_start">#64B5F6</color>
+    <color name="grad_blue_end">#1976D2</color>
+    <color name="grad_green_start">#81C784</color>
+    <color name="grad_green_end">#388E3C</color>
+    <color name="grad_teal_start">#4DB6AC</color>
+    <color name="grad_teal_end">#00796B</color>
 </resources>

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.apsitcanteen.R;
 import com.example.apsitcanteen.adapters.MenuAdapter;
@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment {
     private MenuAdapter adapter;
     private FirebaseFirestore db;
     private ProgressBar progressBar;
-    private TextView tvEmpty, tvStudentName;
+    private TextView tvEmpty;
     private String currentCategory = "All";
     private String searchQuery = "";
 
@@ -47,7 +47,6 @@ public class HomeFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         progressBar = view.findViewById(R.id.progressBar);
         tvEmpty = view.findViewById(R.id.tvEmpty);
-        tvStudentName = view.findViewById(R.id.tvStudentName);
         RecyclerView rvMenu = view.findViewById(R.id.rvMenu);
         EditText etSearch = view.findViewById(R.id.etSearch);
 
@@ -58,23 +57,12 @@ public class HomeFragment extends Fragment {
         controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
         rvMenu.setLayoutAnimation(controller);
 
-        rvMenu.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvMenu.setLayoutManager(new GridLayoutManager(getContext(), 2));
         adapter = new MenuAdapter(filteredList, item -> {
             CartManager.getInstance().addItem(item);
             Toast.makeText(getContext(), item.getName() + " added to cart", Toast.LENGTH_SHORT).show();
         });
         rvMenu.setAdapter(adapter);
-
-        // Fetch user name
-        String uid = FirebaseAuth.getInstance().getUid();
-        if (uid != null) {
-            db.collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    String name = documentSnapshot.getString("name");
-                    if (name != null) tvStudentName.setText(name);
-                }
-            });
-        }
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
