@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.apsitcanteen.models.Order;
@@ -37,26 +35,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // Add fade-in animation to the root view
-        View root = findViewById(R.id.scrollView);
-        Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        fadeIn.setDuration(500);
-        root.startAnimation(fadeIn);
-
         setupToolbar();
-        loadStatsAndRecentOrders();
         setupNavigation();
-        animateStatsCards();
-    }
-
-    private void animateStatsCards() {
-        GridLayout statsGrid = findViewById(R.id.statsGrid);
-        for (int i = 0; i < statsGrid.getChildCount(); i++) {
-            View card = statsGrid.getChildAt(i);
-            Animation popIn = AnimationUtils.loadAnimation(this, R.anim.pop_in);
-            popIn.setStartOffset(i * 100);
-            card.startAnimation(popIn);
-        }
+        loadStatsAndRecentOrders();
     }
 
     private void setupToolbar() {
@@ -76,12 +57,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 .addSnapshotListener((value, error) -> {
                     if (error != null || value == null) return;
 
-                    int todayOrdersCount = 0;
-                    double todayRevenue = 0;
+                    int totalOrders = 0;
+                    double totalRevenue = 0;
                     String todayDate = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(new Date());
 
                     Map<String, Integer> statusCounts = new HashMap<>();
-                    String[] statuses = {"Pending", "Accepted", "Preparing", "Ready", "Completed"};
+                    String[] statuses = {"Pending", "Accepted", "Preparing", "Ready", "Completed", "Cancelled"};
                     for (String s : statuses) statusCounts.put(s, 0);
 
                     List<Order> recentOrders = new ArrayList<>();
@@ -91,11 +72,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
                         Order order = doc.toObject(Order.class);
                         order.setOrderId(doc.getId());
 
-                        String orderDate = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(new Date(order.getTimestamp()));
-                        if (todayDate.equals(orderDate)) {
-                            todayOrdersCount++;
-                            todayRevenue += order.getTotalPrice();
-                        }
+                        totalOrders++;
+                        totalRevenue += order.getTotalPrice();
 
                         String status = order.getStatus();
                         if (statusCounts.containsKey(status)) {
@@ -108,48 +86,68 @@ public class AdminDashboardActivity extends AppCompatActivity {
                         }
                     }
 
-                    updateUI(todayOrdersCount, (int)todayRevenue, statusCounts, recentOrders);
+                    updateUI(totalOrders, (int)totalRevenue, statusCounts, recentOrders);
                 });
     }
 
-    private void updateUI(int todayOrders, int todayRevenue, Map<String, Integer> statusCounts, List<Order> recentOrders) {
-        animateNumber((TextView) findViewById(R.id.tvTodayOrders), todayOrders);
-        animateRevenue((TextView) findViewById(R.id.tvTodayRevenue), todayRevenue);
-        animateNumber((TextView) findViewById(R.id.tvPendingOrders), statusCounts.get("Pending"));
+    private void updateUI(int totalOrders, int totalRevenue, Map<String, Integer> statusCounts, List<Order> recentOrders) {
+        // Animate main cards
+        animateNumber((TextView) findViewById(R.id.tvTodayOrders), totalOrders);
+        animateRevenue((TextView) findViewById(R.id.tvTodayRevenue), totalRevenue);
         
-        // Fetch low stock items from DB
+        // Bounce pop for main cards
+        applyAnimation(findViewById(R.id.cardTotalOrders), R.anim.bounce_pop, 0);
+        applyAnimation(findViewById(R.id.cardTotalRevenue), R.anim.bounce_pop, 200);
+
+        // Low Stock
         db.collection("menu").whereLessThan("stock", 5).get().addOnSuccessListener(queryDocumentSnapshots -> {
             int lowStockCount = queryDocumentSnapshots.size();
-            animateNumber((TextView) findViewById(R.id.tvLowStock), lowStockCount);
+            TextView tvLowStock = findViewById(R.id.tvLowStock);
+            animateNumber(tvLowStock, lowStockCount);
+            
+            View cardLowStock = findViewById(R.id.cardLowStock);
+            applyAnimation(cardLowStock, R.anim.bounce_pop, 400);
+            if (lowStockCount > 0) {
+                cardLowStock.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse));
+            }
         });
 
-        updateStatusBar(R.id.pbPending, R.id.tvPendingCount, statusCounts.get("Pending"));
-        updateStatusBar(R.id.pbPreparing, R.id.tvPreparingCount, statusCounts.get("Preparing"));
-        updateStatusBar(R.id.pbReady, R.id.tvReadyCount, statusCounts.get("Ready"));
-        updateStatusBar(R.id.pbCompleted, R.id.tvCompletedCount, statusCounts.get("Completed"));
+        // Status Cards with alternating slide-in
+        updateStatusCard(R.id.cardStatusPending, R.id.tvPendingCount, statusCounts.get("Pending"), R.anim.slide_in_left, 100);
+        updateStatusCard(R.id.cardStatusAccepted, R.id.tvAcceptedCount, statusCounts.get("Accepted"), R.anim.slide_in_right, 200);
+        updateStatusCard(R.id.cardStatusPreparing, R.id.tvPreparingCount, statusCounts.get("Preparing"), R.anim.slide_in_left, 300);
+        updateStatusCard(R.id.cardStatusReady, R.id.tvReadyCount, statusCounts.get("Ready"), R.anim.slide_in_right, 400);
+        updateStatusCard(R.id.cardStatusCompleted, R.id.tvCompletedCount, statusCounts.get("Completed"), R.anim.slide_in_left, 500);
+        updateStatusCard(R.id.cardStatusCancelled, R.id.tvCancelledCount, statusCounts.get("Cancelled"), R.anim.slide_in_right, 600);
         
         updateRecentOrdersUI(recentOrders);
     }
 
+    private void updateStatusCard(int cardId, int tvId, int count, int animId, int delay) {
+        View card = findViewById(cardId);
+        TextView tv = findViewById(tvId);
+        animateNumber(tv, count);
+        applyAnimation(card, animId, delay);
+    }
+
+    private void applyAnimation(View view, int animId, int delay) {
+        Animation anim = AnimationUtils.loadAnimation(this, animId);
+        anim.setStartOffset(delay);
+        view.startAnimation(anim);
+    }
+
     private void animateNumber(TextView textView, int endValue) {
         ValueAnimator animator = ValueAnimator.ofInt(0, endValue);
-        animator.setDuration(1000);
+        animator.setDuration(1500);
         animator.addUpdateListener(animation -> textView.setText(animation.getAnimatedValue().toString()));
         animator.start();
     }
 
     private void animateRevenue(TextView textView, int endValue) {
         ValueAnimator animator = ValueAnimator.ofInt(0, endValue);
-        animator.setDuration(1000);
+        animator.setDuration(1500);
         animator.addUpdateListener(animation -> textView.setText("₹" + animation.getAnimatedValue().toString()));
         animator.start();
-    }
-
-    private void updateStatusBar(int pbId, int tvId, int count) {
-        ((TextView) findViewById(tvId)).setText(String.valueOf(count));
-        ProgressBar pb = findViewById(pbId);
-        pb.setMax(20); 
-        pb.setProgress(count);
     }
 
     private void updateRecentOrdersUI(List<Order> recentOrders) {
@@ -166,55 +164,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
             TextView tvStatus = row.findViewById(R.id.tvStatusBadge);
             tvStatus.setText(order.getStatus());
-            setStatusBadgeStyle(tvStatus, order.getStatus());
-
-            row.setOnClickListener(v -> {
-                v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
-                Intent intent = new Intent(AdminDashboardActivity.this, AdminOrderDetailActivity.class);
-                intent.putExtra("orderId", order.getOrderId());
-                startActivity(intent);
-            });
-
-            Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
-            slideIn.setStartOffset(i * 100);
-            row.startAnimation(slideIn);
-
+            
             container.addView(row);
         }
     }
 
-    private void setStatusBadgeStyle(TextView tv, String status) {
-        switch (status) {
-            case "Pending": tv.setBackgroundResource(R.drawable.bg_badge_pending); break;
-            case "Accepted":
-            case "Preparing": tv.setBackgroundResource(R.drawable.bg_badge_preparing); break;
-            case "Ready": tv.setBackgroundResource(R.drawable.bg_badge_ready); break;
-            case "Completed": tv.setBackgroundResource(R.drawable.bg_badge_completed); break;
-            default: tv.setBackgroundResource(R.drawable.bg_badge_cancelled); break;
-        }
-    }
-
     private void setupNavigation() {
-        findViewById(R.id.cardMenuManagement).setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
-            startActivity(new Intent(this, AdminMenuManagementActivity.class));
-        });
-        findViewById(R.id.cardOrderManagement).setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
-            startActivity(new Intent(this, AdminOrderManagementActivity.class));
-        });
-        findViewById(R.id.tvViewAllOrders).setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
-            startActivity(new Intent(this, AdminOrderManagementActivity.class));
-        });
-        findViewById(R.id.cardInventory).setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
-            startActivity(new Intent(this, AdminInventoryActivity.class));
-        });
-        findViewById(R.id.cardReports).setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
-            startActivity(new Intent(this, AdminReportsActivity.class));
-        });
+        findViewById(R.id.cardMenuManagement).setOnClickListener(v -> startActivity(new Intent(this, AdminMenuManagementActivity.class)));
+        findViewById(R.id.cardOrderManagement).setOnClickListener(v -> startActivity(new Intent(this, AdminOrderManagementActivity.class)));
+        findViewById(R.id.tvViewAllOrders).setOnClickListener(v -> startActivity(new Intent(this, AdminOrderManagementActivity.class)));
+        findViewById(R.id.cardInventory).setOnClickListener(v -> startActivity(new Intent(this, AdminInventoryActivity.class)));
+        findViewById(R.id.cardReports).setOnClickListener(v -> startActivity(new Intent(this, AdminReportsActivity.class)));
     }
 
     @Override
