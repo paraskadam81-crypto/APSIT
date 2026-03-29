@@ -49,21 +49,28 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         
         switch (status) {
             case "Pending": 
-                statusColor = 0xFFF0C040; 
+                statusColor = 0xFFF39C12; // Orange
                 badgeBg = R.drawable.bg_badge_pending;
                 break;
             case "Accepted":
+                statusColor = 0xFF3498DB; // Blue
+                badgeBg = R.drawable.bg_badge_accepted;
+                break;
             case "Preparing": 
-                statusColor = 0xFF378ADD; 
+                statusColor = 0xFF9B59B6; // Purple
                 badgeBg = R.drawable.bg_badge_preparing;
                 break;
             case "Ready": 
-                statusColor = 0xFF2D6A4F; 
+                statusColor = 0xFF27AE60; // Green
                 badgeBg = R.drawable.bg_badge_ready;
                 break;
             case "Completed": 
-                statusColor = 0xFF1B4332; 
+                statusColor = 0xFF1B4332; // Dark Green
                 badgeBg = R.drawable.bg_badge_completed;
+                break;
+            case "Cancelled":
+                statusColor = 0xFFE74C3C; // Red
+                badgeBg = R.drawable.bg_badge_cancelled;
                 break;
             default: 
                 statusColor = Color.GRAY;
@@ -71,8 +78,15 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         }
 
         holder.viewAccent.setBackgroundColor(statusColor);
-        holder.tvOrderId.setText("#" + order.getOrderId().substring(0, Math.min(order.getOrderId().length(), 6)));
-        holder.tvStudentInfo.setText(order.getStudentName());
+        
+        String orderId = order.getOrderId();
+        if (orderId != null && orderId.length() > 6) {
+            holder.tvOrderId.setText("#" + orderId.substring(0, 6).toUpperCase());
+        } else {
+            holder.tvOrderId.setText("#" + (orderId != null ? orderId.toUpperCase() : "N/A"));
+        }
+        
+        holder.tvStudentInfo.setText(order.getStudentName() != null ? order.getStudentName() : "Unknown Student");
         
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, hh:mm a", Locale.getDefault());
         holder.tvDateTime.setText(sdf.format(new Date(order.getTimestamp())));

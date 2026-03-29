@@ -1,9 +1,11 @@
 package com.example.apsitcanteen;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,17 +27,16 @@ import java.util.List;
 
 public class AdminOrderManagementActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private AdminOrderAdapter adapter;
     private List<Order> masterList = new ArrayList<>();
-    private List<Order> filteredList = new ArrayList<>();
     private String currentStatusFilter = "All";
     private String searchQuery = "";
 
     private FirebaseFirestore db;
     private ListenerRegistration ordersListener;
     private ProgressBar progressBar;
-    private TextView tvEmpty;
+    private LinearLayout ordersContainer;
+
+    private TextView tvCountPending, tvCountPreparing, tvCountReady;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +47,15 @@ public class AdminOrderManagementActivity extends AppCompatActivity {
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         progressBar = findViewById(R.id.progressBar);
-        tvEmpty = findViewById(R.id.tvEmpty);
+        ordersContainer = findViewById(R.id.ordersContainer);
 
-        recyclerView = findViewById(R.id.rvOrders);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new AdminOrderAdapter(this, filteredList, order -> {
-            Intent intent = new Intent(this, AdminOrderDetailActivity.class);
-            intent.putExtra("orderId", order.getOrderId());
-            startActivity(intent);
-        });
-        recyclerView.setAdapter(adapter);
+        tvCountPending = findViewById(R.id.tvCountPending);
+        tvCountPreparing = findViewById(R.id.tvCountPreparing);
+        tvCountReady = findViewById(R.id.tvCountReady);
+
+        tvCountPending.setOnClickListener(v -> selectTab("Pending"));
+        tvCountPreparing.setOnClickListener(v -> selectTab("Preparing"));
+        tvCountReady.setOnClickListener(v -> selectTab("Ready"));
 
         EditText etSearch = findViewById(R.id.etSearch);
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -72,6 +72,19 @@ public class AdminOrderManagementActivity extends AppCompatActivity {
 
         setupStatusFilters();
         listenToOrders();
+    }
+
+    private void selectTab(String status) {
+        currentStatusFilter = status;
+        applyFilters();
+        updateSummaryPills();
+        
+        // Update the bottom chip filters to match (if applicable)
+        LinearLayout filterContainer = findViewById(R.id.filterContainer);
+        for (int i = 0; i < filterContainer.getChildCount(); i++) {
+            TextView c = (TextView) filterContainer.getChildAt(i);
+            updateChipStyle(c, c.getText().toString().equalsIgnoreCase(currentStatusFilter));
+        }
     }
 
     private void listenToOrders() {
@@ -101,7 +114,7 @@ public class AdminOrderManagementActivity extends AppCompatActivity {
     }
 
     private void setupStatusFilters() {
-        String[] statuses = {"All", "Pending", "Accepted", "Preparing", "Ready", "Completed"};
+        String[] statuses = {"All", "Pending", "Accepted", "Preparing", "Ready", "Completed", "Cancelled"};
         LinearLayout filterContainer = findViewById(R.id.filterContainer);
 
         for (String status : statuses) {
@@ -117,6 +130,7 @@ public class AdminOrderManagementActivity extends AppCompatActivity {
                     updateChipStyle(c, c.getText().toString().equals(currentStatusFilter));
                 }
                 applyFilters();
+                updateSummaryPills();
             });
             filterContainer.addView(chip);
         }
@@ -125,10 +139,10 @@ public class AdminOrderManagementActivity extends AppCompatActivity {
     private void updateChipStyle(TextView chip, boolean isSelected) {
         if (isSelected) {
             chip.setBackgroundResource(R.drawable.bg_fab_gold);
-            chip.setTextColor(getResources().getColor(android.R.color.white));
+            chip.setTextColor(Color.WHITE);
         } else {
             chip.setBackgroundResource(R.drawable.bg_status_inactive);
-            chip.setTextColor(getResources().getColor(R.color.colorTextSecondary));
+            chip.setTextColor(Color.parseColor("#757575"));
         }
     }
 
@@ -143,30 +157,96 @@ public class AdminOrderManagementActivity extends AppCompatActivity {
             else if ("Ready".equalsIgnoreCase(order.getStatus())) ready++;
         }
 
-        View tvPending = findViewById(R.id.tvCountPending);
-        if (tvPending instanceof TextView) ((TextView) tvPending).setText(pending + " Pending");
+        updateTabStyle(tvCountPending, "Pending", pending);
+        updateTabStyle(tvCountPreparing, "Preparing", preparing);
+        updateTabStyle(tvCountReady, "Ready", ready);
+    }
+
+    private void updateTabStyle(TextView tv, String status, int count) {
+        tv.setText(status + " (" + count + ")");
+        boolean isSelected = status.equalsIgnoreCase(currentStatusFilter);
         
-        View tvPreparing = findViewById(R.id.tvCountPreparing);
-        if (tvPreparing instanceof TextView) ((TextView) tvPreparing).setText(preparing + " Preparing");
-        
-        View tvReady = findViewById(R.id.tvCountReady);
-        if (tvReady instanceof TextView) ((TextView) tvReady).setText(ready + " Ready");
+        if (isSelected) {
+            tv.setTextColor(Color.WHITE);
+            switch (status) {
+                case "Pending": tv.setBackgroundResource(R.drawable.bg_badge_pending); break;
+                case "Preparing": tv.setBackgroundResource(R.drawable.bg_badge_preparing); break;
+                case "Ready": tv.setBackgroundResource(R.drawable.bg_badge_ready); break;
+            }
+        } else {
+            tv.setTextColor(Color.parseColor("#333333"));
+            tv.setBackgroundResource(R.drawable.bg_tab_unselected);
+        }
     }
 
     private void applyFilters() {
-        filteredList.clear();
-        for (Order order : masterList) {
-            boolean matchesStatus = currentStatusFilter.equals("All") ||
-                    order.getStatus().equalsIgnoreCase(currentStatusFilter);
-            boolean matchesSearch = order.getOrderId().toLowerCase().contains(searchQuery) ||
-                    order.getStudentName().toLowerCase().contains(searchQuery);
-            if (matchesStatus && matchesSearch) {
-                filteredList.add(order);
-            }
+        if (ordersContainer == null) return;
+        ordersContainer.removeAllViews();
+        
+        String[] statuses;
+        if (currentStatusFilter.equals("All")) {
+            statuses = new String[]{"Pending", "Accepted", "Preparing", "Ready", "Completed", "Cancelled"};
+        } else {
+            statuses = new String[]{currentStatusFilter};
         }
-        adapter.notifyDataSetChanged();
-        if (tvEmpty != null) {
-            tvEmpty.setVisibility(filteredList.isEmpty() ? View.VISIBLE : View.GONE);
+
+        for (String status : statuses) {
+            List<Order> statusOrders = new ArrayList<>();
+            for (Order order : masterList) {
+                String orderStatus = order.getStatus() != null ? order.getStatus() : "Pending";
+                if (orderStatus.equalsIgnoreCase(status)) {
+                    boolean matchesSearch = order.getOrderId().toLowerCase().contains(searchQuery) ||
+                            (order.getStudentName() != null && order.getStudentName().toLowerCase().contains(searchQuery));
+                    if (matchesSearch) {
+                        statusOrders.add(order);
+                    }
+                }
+            }
+            addStatusSection(status, statusOrders);
+        }
+    }
+
+    private void addStatusSection(String status, List<Order> orders) {
+        View headerView = getLayoutInflater().inflate(R.layout.layout_admin_status_header, ordersContainer, false);
+        TextView tvTitle = headerView.findViewById(R.id.tvStatusTitle);
+        TextView tvCount = headerView.findViewById(R.id.tvStatusCount);
+        
+        tvTitle.setText(status.toUpperCase());
+        tvCount.setText(String.valueOf(orders.size()));
+        
+        int color;
+        switch (status) {
+            case "Pending": color = 0xFFF39C12; break; // Orange
+            case "Accepted": color = 0xFF3498DB; break; // Blue
+            case "Preparing": color = 0xFF9B59B6; break; // Purple
+            case "Ready": color = 0xFF27AE60; break; // Green
+            case "Completed": color = 0xFF1B4332; break; // Dark Green
+            case "Cancelled": color = 0xFFE74C3C; break; // Red
+            default: color = 0xFF7F8C8D;
+        }
+        headerView.setBackgroundColor(color);
+        ordersContainer.addView(headerView);
+        
+        if (orders.isEmpty()) {
+            TextView tvNoOrders = new TextView(this);
+            tvNoOrders.setText("No " + status.toLowerCase() + " orders");
+            tvNoOrders.setPadding(48, 32, 48, 32);
+            tvNoOrders.setTextColor(Color.GRAY);
+            tvNoOrders.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            tvNoOrders.setGravity(android.view.Gravity.CENTER);
+            ordersContainer.addView(tvNoOrders);
+        } else {
+            AdminOrderAdapter adapter = new AdminOrderAdapter(this, orders, order -> {
+                Intent intent = new Intent(this, AdminOrderDetailActivity.class);
+                intent.putExtra("orderId", order.getOrderId());
+                startActivity(intent);
+            });
+            
+            RecyclerView rv = new RecyclerView(this);
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            rv.setAdapter(adapter);
+            rv.setNestedScrollingEnabled(false);
+            ordersContainer.addView(rv);
         }
     }
 
