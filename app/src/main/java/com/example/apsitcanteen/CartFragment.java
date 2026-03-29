@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +38,10 @@ public class CartFragment extends Fragment {
 
     private RecyclerView rvCart;
     private CartAdapter adapter;
-    private TextView tvSubtotal, tvTotalAmount;
-    private LinearLayout layoutEmptyCart;
-    private View cardSummary;
+    private TextView tvTotalPrice, tvEmpty;
+    private View cardTotal;
     private Button btnPlaceOrder;
+    private ProgressBar progressBar;
 
     // ✅ Firebase variables
     private DatabaseReference usersRef;
@@ -58,12 +58,12 @@ public class CartFragment extends Fragment {
         mAuth    = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        rvCart          = view.findViewById(R.id.rvCart);
-        tvSubtotal      = view.findViewById(R.id.tvSubtotal);
-        tvTotalAmount   = view.findViewById(R.id.tvTotalAmount);
-        layoutEmptyCart = view.findViewById(R.id.layoutEmptyCart);
-        cardSummary     = view.findViewById(R.id.cardSummary);
-        btnPlaceOrder   = view.findViewById(R.id.btnPlaceOrder);
+        rvCart = view.findViewById(R.id.rvCart);
+        tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
+        tvEmpty = view.findViewById(R.id.tvEmpty);
+        cardTotal = view.findViewById(R.id.cardTotal);
+        btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder);
+        progressBar = view.findViewById(R.id.progressBar);
 
         setupRecyclerView();
         updateUI();
@@ -160,17 +160,16 @@ public class CartFragment extends Fragment {
     private void updateUI() {
         List<CartItem> items = CartManager.getInstance().getCartItems();
         if (items.isEmpty()) {
-            layoutEmptyCart.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.VISIBLE);
             rvCart.setVisibility(View.GONE);
-            cardSummary.setVisibility(View.GONE);
+            cardTotal.setVisibility(View.GONE);
         } else {
-            layoutEmptyCart.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.GONE);
             rvCart.setVisibility(View.VISIBLE);
-            cardSummary.setVisibility(View.VISIBLE);
+            cardTotal.setVisibility(View.VISIBLE);
 
             double total = CartManager.getInstance().getTotalPrice();
-            tvSubtotal.setText("₹"    + (int) total);
-            tvTotalAmount.setText("₹" + (int) total);
+            tvTotalPrice.setText("₹"    + (int) total);
         }
     }
 }

@@ -88,7 +88,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     private void startPulseAnimation(View view) {
         Animation pulse = AnimationUtils.loadAnimation(view.getContext(), R.anim.pulse);
-        view.startAnimation(pulse);
+        if (pulse != null) view.startAnimation(pulse);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             tvOrderId = itemView.findViewById(R.id.tvOrderId);
             tvDate = itemView.findViewById(R.id.tvOrderDate);
             tvItemsSummary = itemView.findViewById(R.id.tvOrderItems);
-            tvAmount = itemView.findViewById(R.id.tvOrderAmount);
+            tvAmount = itemView.findViewById(R.id.tvOrderPrice);
             tvStatus = itemView.findViewById(R.id.tvOrderStatus);
         }
     }

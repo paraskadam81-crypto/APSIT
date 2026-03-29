@@ -70,7 +70,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             holder.itemView.setAlpha(1.0f);
             holder.ivFood.clearColorFilter();
             holder.btnAdd.setEnabled(true);
-            holder.btnAdd.setBackgroundResource(R.drawable.bg_add_button_modern);
+            // holder.btnAdd.setBackgroundResource(R.drawable.bg_add_button_modern); // Commented out as it might not exist
             holder.btnAdd.setText("+ ADD");
         } else {
             holder.itemView.setAlpha(0.5f);
@@ -80,14 +80,14 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             holder.ivFood.setColorFilter(filter);
             holder.btnAdd.setEnabled(false);
             holder.btnAdd.setText("Unavailable");
-            holder.btnAdd.setBackgroundResource(R.drawable.bg_category_chip_unselected);
+            // holder.btnAdd.setBackgroundResource(R.drawable.bg_category_chip_unselected); // Commented out as it might not exist
         }
         
         holder.btnAdd.setOnClickListener(v -> {
             if (item.isAvailable()) {
                 // Add scale pop animation
                 Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce_button);
-                v.startAnimation(animation);
+                if (animation != null) v.startAnimation(animation);
 
                 listener.onAddClick(item);
             }
@@ -99,8 +99,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     private void setAnimation(View viewToAnimate, int position) {
         if (position > lastPosition) {
             Animation animation = AnimationUtils.loadAnimation(viewToAnimate.getContext(), R.anim.slide_in_up);
-            viewToAnimate.startAnimation(animation);
-            lastPosition = position;
+            if (animation != null) {
+                viewToAnimate.startAnimation(animation);
+                lastPosition = position;
+            }
         }
     }
 
@@ -117,9 +119,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         public MenuViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvFoodName);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
-            ivFood = itemView.findViewById(R.id.ivFood);
+            tvDescription = itemView.findViewById(R.id.tvFoodDescription);
+            tvPrice = itemView.findViewById(R.id.tvFoodPrice);
+            ivFood = itemView.findViewById(R.id.ivFoodImage);
             btnAdd = itemView.findViewById(R.id.btnAdd);
         }
     }

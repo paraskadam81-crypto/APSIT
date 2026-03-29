@@ -2,6 +2,7 @@ package com.example.apsitcanteen;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -164,6 +165,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
             TextView tvStatus = row.findViewById(R.id.tvStatusBadge);
             tvStatus.setText(order.getStatus());
+            tvStatus.setTextColor(Color.WHITE);
+            tvStatus.setTypeface(null, android.graphics.Typeface.BOLD);
+
+            switch (order.getStatus()) {
+                case "Pending": tvStatus.setBackgroundResource(R.drawable.bg_badge_pending); break;
+                case "Accepted": tvStatus.setBackgroundResource(R.drawable.bg_badge_accepted); break;
+                case "Preparing": tvStatus.setBackgroundResource(R.drawable.bg_badge_preparing); break;
+                case "Ready": tvStatus.setBackgroundResource(R.drawable.bg_badge_ready); break;
+                case "Completed": tvStatus.setBackgroundResource(R.drawable.bg_badge_completed); break;
+                case "Cancelled": tvStatus.setBackgroundResource(R.drawable.bg_badge_cancelled); break;
+            }
             
             container.addView(row);
         }

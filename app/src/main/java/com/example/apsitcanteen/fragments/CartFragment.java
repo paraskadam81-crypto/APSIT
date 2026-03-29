@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,10 +27,10 @@ public class CartFragment extends Fragment {
 
     private RecyclerView rvCart;
     private CartAdapter adapter;
-    private TextView tvSubtotal, tvTotalAmount;
-    private LinearLayout layoutEmptyCart;
-    private View cardSummary;
+    private TextView tvTotalPrice, tvEmpty;
+    private View cardTotal;
     private Button btnPlaceOrder;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -38,11 +38,11 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
         rvCart = view.findViewById(R.id.rvCart);
-        tvSubtotal = view.findViewById(R.id.tvSubtotal);
-        tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
-        layoutEmptyCart = view.findViewById(R.id.layoutEmptyCart);
-        cardSummary = view.findViewById(R.id.cardSummary);
+        tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
+        tvEmpty = view.findViewById(R.id.tvEmpty);
+        cardTotal = view.findViewById(R.id.cardTotal);
         btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder);
+        progressBar = view.findViewById(R.id.progressBar);
 
         setupRecyclerView();
         updateUI();
@@ -50,13 +50,6 @@ public class CartFragment extends Fragment {
         btnPlaceOrder.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), OrderConfirmationActivity.class);
             startActivity(intent);
-        });
-
-        view.findViewById(R.id.btnBrowseMenu).setOnClickListener(v -> {
-            // Navigate back to HomeFragment
-            if (getActivity() != null) {
-                ((com.example.apsitcanteen.MainActivity) getActivity()).findViewById(R.id.nav_home).performClick();
-            }
         });
 
         return view;
@@ -94,17 +87,16 @@ public class CartFragment extends Fragment {
     private void updateUI() {
         List<CartItem> items = CartManager.getInstance().getCartItems();
         if (items.isEmpty()) {
-            layoutEmptyCart.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.VISIBLE);
             rvCart.setVisibility(View.GONE);
-            cardSummary.setVisibility(View.GONE);
+            cardTotal.setVisibility(View.GONE);
         } else {
-            layoutEmptyCart.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.GONE);
             rvCart.setVisibility(View.VISIBLE);
-            cardSummary.setVisibility(View.VISIBLE);
+            cardTotal.setVisibility(View.VISIBLE);
             
             double total = CartManager.getInstance().getTotalPrice();
-            tvSubtotal.setText(getString(R.string.currency_format, (int)total));
-            tvTotalAmount.setText(getString(R.string.currency_format, (int)total));
+            tvTotalPrice.setText("₹" + (int)total);
         }
     }
 }
