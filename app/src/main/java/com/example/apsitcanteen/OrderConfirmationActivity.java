@@ -1,5 +1,6 @@
 package com.example.apsitcanteen;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,22 +22,30 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class OrderConfirmationActivity extends AppCompatActivity {
+public class OrderConfirmationActivity extends AppCompatActivity implements PaymentResultListener {
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private String orderId;
+    private double totalAmount;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_confirmation);
+
+        Checkout.preload(getApplicationContext());
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -44,11 +53,11 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
         setupItemsList();
 
-        double total = CartManager.getInstance().getTotalPrice();
+        totalAmount = CartManager.getInstance().getTotalPrice();
         ((TextView) findViewById(R.id.tvTotalAmount)).setText(
-                getString(R.string.currency_format, (int) total));
+                String.format(Locale.getDefault(), "₹%d", (int) totalAmount));
 
-        placeOrder(total);
+        fetchUserAndStartPayment();
 
         findViewById(R.id.btnTrackOrder).setOnClickListener(v -> {
             if (orderId != null) {
@@ -59,16 +68,13 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnBackToMenu).setOnClickListener(v -> {
-            if (orderId != null) {
-                CartManager.getInstance().clearCart();
-            }
             Intent intent = new Intent(OrderConfirmationActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
     }
 
-    private void placeOrder(double total) {
+    private void fetchUserAndStartPayment() {
         if (mAuth.getCurrentUser() == null) return;
         
         progressBar.setVisibility(View.VISIBLE);
@@ -76,10 +82,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    User user = documentSnapshot.toObject(User.class);
-                    if (user != null) {
-                        List<CartItem> items = new ArrayList<>(CartManager.getInstance().getCartItems());
-                        fetchReferencesAndExecute(user, items, total);
+                    currentUser = documentSnapshot.toObject(User.class);
+                    if (currentUser != null) {
+                        preCheckInventoryAndStartPayment();
                     } else {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(this, "User profile not found", Toast.LENGTH_SHORT).show();
@@ -91,7 +96,99 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 });
     }
 
-    private void fetchReferencesAndExecute(User user, List<CartItem> items, double total) {
+    private void preCheckInventoryAndStartPayment() {
+        List<CartItem> items = CartManager.getInstance().getCartItems();
+        if (items.isEmpty()) {
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
+        List<Task<QuerySnapshot>> inventoryTasks = new ArrayList<>();
+        for (CartItem item : items) {
+            String name = item.getFoodItem().getName();
+            inventoryTasks.add(db.collection("inventory").whereEqualTo("itemName", name).get());
+        }
+
+        Tasks.whenAllSuccess(inventoryTasks).addOnSuccessListener(results -> {
+            List<String> errors = new ArrayList<>();
+            for (int i = 0; i < items.size(); i++) {
+                CartItem item = items.get(i);
+                QuerySnapshot snapshot = (QuerySnapshot) results.get(i);
+                
+                if (snapshot == null || snapshot.isEmpty()) {
+                    errors.add(item.getFoodItem().getName() + " is out of stock");
+                    continue;
+                }
+
+                DocumentSnapshot doc = snapshot.getDocuments().get(0);
+                long stock = 0;
+                if (doc.contains("currentStock")) {
+                    stock = doc.getLong("currentStock");
+                }
+                
+                if (stock < item.getQuantity()) {
+                    if (stock <= 0) {
+                        errors.add(item.getFoodItem().getName() + " is out of stock");
+                    } else {
+                        errors.add("Sorry, only " + stock + " quantity available for " + item.getFoodItem().getName());
+                    }
+                }
+            }
+
+            if (!errors.isEmpty()) {
+                progressBar.setVisibility(View.GONE);
+                showStockErrorDialog(android.text.TextUtils.join("\n", errors));
+            } else {
+                startPayment();
+            }
+        }).addOnFailureListener(e -> {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(this, "Error checking inventory: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void startPayment() {
+        Checkout checkout = new Checkout();
+        checkout.setKeyID("rzp_test_SWyjR5vSiX1xcF");
+
+        try {
+            JSONObject options = new JSONObject();
+            options.put("name", "APSIT Canteen");
+            options.put("description", "Order Payment");
+            options.put("currency", "INR");
+            options.put("amount", (int) (totalAmount * 100));
+
+            JSONObject prefill = new JSONObject();
+            prefill.put("email", currentUser.getEmail());
+            options.put("prefill", prefill);
+
+            checkout.open(this, options);
+        } catch (Exception e) {
+            Log.e("Razorpay", "Error in starting Razorpay Checkout", e);
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(this, "Payment initialization error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPaymentSuccess(String razorpayPaymentId) {
+        placeOrder(razorpayPaymentId);
+    }
+
+    @Override
+    public void onPaymentError(int code, String response) {
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(this, "Payment failed: " + response, Toast.LENGTH_LONG).show();
+        ((TextView) findViewById(R.id.tvOrderId)).setText("Payment Failed");
+    }
+
+    private void placeOrder(String paymentId) {
+        progressBar.setVisibility(View.VISIBLE);
+        List<CartItem> items = new ArrayList<>(CartManager.getInstance().getCartItems());
+        fetchReferencesAndExecute(currentUser, items, totalAmount, paymentId);
+    }
+
+    private void fetchReferencesAndExecute(User user, List<CartItem> items, double total, String paymentId) {
         List<Task<QuerySnapshot>> inventoryTasks = new ArrayList<>();
         List<Task<QuerySnapshot>> menuTasks = new ArrayList<>();
 
@@ -107,7 +204,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         Tasks.whenAllComplete(invTask, menuTask).addOnCompleteListener(t -> {
             if (!invTask.isSuccessful() || !menuTask.isSuccessful()) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(this, R.string.error_order_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Order processing failed", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -127,13 +224,14 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 }
             }
 
-            executeTransaction(user, items, total, invRefs, menuRefs);
+            executeTransaction(user, items, total, invRefs, menuRefs, paymentId);
         });
     }
 
     private void executeTransaction(User user, List<CartItem> items, double total,
                                     Map<String, DocumentReference> invRefs,
-                                    Map<String, DocumentReference> menuRefs) {
+                                    Map<String, DocumentReference> menuRefs,
+                                    String paymentId) {
         db.runTransaction(transaction -> {
             List<String> errors = new ArrayList<>();
             Map<String, Integer> currentStocks = new HashMap<>();
@@ -143,7 +241,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 DocumentReference invRef = invRefs.get(name);
 
                 if (invRef == null) {
-                    errors.add(getString(R.string.error_out_of_stock, name));
+                    errors.add(name + " is out of stock");
                     continue;
                 }
 
@@ -155,9 +253,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 
                 if (stock < item.getQuantity()) {
                     if (stock <= 0) {
-                        errors.add(getString(R.string.error_out_of_stock, name));
+                        errors.add(name + " is out of stock");
                     } else {
-                        errors.add(getString(R.string.error_insufficient_stock, (int)stock, name));
+                        errors.add("Only " + stock + " items left for " + name);
                     }
                 }
                 currentStocks.put(name, (int)stock);
@@ -170,7 +268,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
             // All valid, proceed with order and deduction
             DocumentReference orderRef = db.collection("orders").document();
-            Order order = new Order(orderRef.getId(), user.getUserId(), user.getName(), items, total, "Pending", System.currentTimeMillis());
+            Order order = new Order(orderRef.getId(), user.getUserId(), user.getName(), items, total, "Pending", System.currentTimeMillis(), paymentId);
             transaction.set(orderRef, order);
 
             for (CartItem item : items) {
@@ -187,6 +285,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
             orderId = id;
             progressBar.setVisibility(View.GONE);
             ((TextView) findViewById(R.id.tvOrderId)).setText("#" + orderId);
+            CartManager.getInstance().clearCart();
             Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
             progressBar.setVisibility(View.GONE);
@@ -194,16 +293,16 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 ((FirebaseFirestoreException) e).getCode() == FirebaseFirestoreException.Code.ABORTED) {
                 showStockErrorDialog(e.getMessage());
             } else {
-                Toast.makeText(this, R.string.error_order_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Order placement failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void showStockErrorDialog(String message) {
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_unavailable_title)
+                .setTitle("Item Unavailable")
                 .setMessage(message)
-                .setPositiveButton(R.string.btn_ok, (dialog, which) -> {
+                .setPositiveButton("OK", (dialog, which) -> {
                     ((TextView) findViewById(R.id.tvOrderId)).setText("Order Blocked");
                 })
                 .setCancelable(false)

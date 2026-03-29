@@ -12,6 +12,7 @@ public class Order {
     private String status; // Pending, Accepted, Preparing, Ready, Completed
     private long timestamp;
     private String estimatedTime;
+    private String paymentId;
 
     public Order() {}
 
@@ -23,6 +24,18 @@ public class Order {
         this.totalPrice = totalPrice;
         this.status = status;
         this.timestamp = timestamp;
+    }
+
+    // Constructor with Payment ID
+    public Order(String orderId, String studentId, String studentName, List<CartItem> items, double totalPrice, String status, long timestamp, String paymentId) {
+        this.orderId = orderId;
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.items = items;
+        this.totalPrice = totalPrice;
+        this.status = status;
+        this.timestamp = timestamp;
+        this.paymentId = paymentId;
     }
 
     // Constructor for DummyData
@@ -59,4 +72,7 @@ public class Order {
 
     public String getEstimatedTime() { return estimatedTime; }
     public void setEstimatedTime(String estimatedTime) { this.estimatedTime = estimatedTime; }
+
+    public String getPaymentId() { return paymentId; }
+    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
 }

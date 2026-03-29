@@ -44,6 +44,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.razorpay:checkout:1.6.33")
 
     implementation(libs.appcompat)
     implementation(libs.material)
