@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,10 +46,22 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setupToolbar();
         loadStatsAndRecentOrders();
         setupNavigation();
+        animateStatsCards();
+    }
+
+    private void animateStatsCards() {
+        GridLayout statsGrid = findViewById(R.id.statsGrid);
+        for (int i = 0; i < statsGrid.getChildCount(); i++) {
+            View card = statsGrid.getChildAt(i);
+            Animation popIn = AnimationUtils.loadAnimation(this, R.anim.pop_in);
+            popIn.setStartOffset(i * 100);
+            card.startAnimation(popIn);
+        }
     }
 
     private void setupToolbar() {
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(AdminDashboardActivity.this, LandingActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -104,8 +117,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
         animateRevenue((TextView) findViewById(R.id.tvTodayRevenue), todayRevenue);
         animateNumber((TextView) findViewById(R.id.tvPendingOrders), statusCounts.get("Pending"));
         
-        // Simulating low stock for demo purposes or fetch from real inventory count
-        animateNumber((TextView) findViewById(R.id.tvLowStock), 3); 
+        // Fetch low stock items from DB
+        db.collection("menu").whereLessThan("stock", 5).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            int lowStockCount = queryDocumentSnapshots.size();
+            animateNumber((TextView) findViewById(R.id.tvLowStock), lowStockCount);
+        });
 
         updateStatusBar(R.id.pbPending, R.id.tvPendingCount, statusCounts.get("Pending"));
         updateStatusBar(R.id.pbPreparing, R.id.tvPreparingCount, statusCounts.get("Preparing"));
@@ -140,7 +156,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         LinearLayout container = findViewById(R.id.recentOrdersContainer);
         container.removeAllViews();
 
-        for (Order order : recentOrders) {
+        for (int i = 0; i < recentOrders.size(); i++) {
+            Order order = recentOrders.get(i);
             View row = getLayoutInflater().inflate(R.layout.item_admin_order_summary, container, false);
 
             ((TextView) row.findViewById(R.id.tvOrderId)).setText("#" + order.getOrderId().substring(0, Math.min(order.getOrderId().length(), 6)));
@@ -152,10 +169,15 @@ public class AdminDashboardActivity extends AppCompatActivity {
             setStatusBadgeStyle(tvStatus, order.getStatus());
 
             row.setOnClickListener(v -> {
+                v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
                 Intent intent = new Intent(AdminDashboardActivity.this, AdminOrderDetailActivity.class);
                 intent.putExtra("orderId", order.getOrderId());
                 startActivity(intent);
             });
+
+            Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+            slideIn.setStartOffset(i * 100);
+            row.startAnimation(slideIn);
 
             container.addView(row);
         }
@@ -173,11 +195,26 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void setupNavigation() {
-        findViewById(R.id.cardMenuManagement).setOnClickListener(v -> startActivity(new Intent(this, AdminMenuManagementActivity.class)));
-        findViewById(R.id.cardOrderManagement).setOnClickListener(v -> startActivity(new Intent(this, AdminOrderManagementActivity.class)));
-        findViewById(R.id.tvViewAllOrders).setOnClickListener(v -> startActivity(new Intent(this, AdminOrderManagementActivity.class)));
-        findViewById(R.id.cardInventory).setOnClickListener(v -> startActivity(new Intent(this, AdminInventoryActivity.class)));
-        findViewById(R.id.cardReports).setOnClickListener(v -> startActivity(new Intent(this, AdminReportsActivity.class)));
+        findViewById(R.id.cardMenuManagement).setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
+            startActivity(new Intent(this, AdminMenuManagementActivity.class));
+        });
+        findViewById(R.id.cardOrderManagement).setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
+            startActivity(new Intent(this, AdminOrderManagementActivity.class));
+        });
+        findViewById(R.id.tvViewAllOrders).setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
+            startActivity(new Intent(this, AdminOrderManagementActivity.class));
+        });
+        findViewById(R.id.cardInventory).setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
+            startActivity(new Intent(this, AdminInventoryActivity.class));
+        });
+        findViewById(R.id.cardReports).setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.button_click));
+            startActivity(new Intent(this, AdminReportsActivity.class));
+        });
     }
 
     @Override
