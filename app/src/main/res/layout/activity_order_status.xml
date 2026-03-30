@@ -1,115 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
-    android:orientation="vertical">
+    android:background="@color/backgroundColor">
 
-    <!-- Top Section -->
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/bg_landing_gradient"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:text="@string/order_status"
-            android:textColor="@color/white"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvOrderId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:alpha="0.7"
-            android:text="Tracking Order"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="-30dp"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="8dp">
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_landing_gradient"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="32dp">
-
-                <!-- Current Status Badge -->
-                <TextView
-                    android:id="@+id/tvCurrentStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bg_badge_pending"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="8dp"
-                    android:text="Status: Pending"
-                    android:textColor="#856404"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <!-- Timeline Container (Simplified for now) -->
-                <LinearLayout
-                    android:id="@+id/timelineContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvStatusDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="We have received your order and it's being reviewed."
-                        android:textColor="@color/colorTextSecondary"
-                        android:textSize="14sp"
-                        android:gravity="center" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/btnBackHome"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_gold_button"
-                    android:text="@string/back_to_home"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextOnAccent"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/progressBar"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
+                android:fontFamily="serif"
+                android:text="Track Your Order"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/tvOrderId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0.8"
+                android:text="#ORD12345"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
 
-</LinearLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvOrderItems"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1 x Burger, 2 x Pizza"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="12dp"
+                        android:background="@color/dividerColor" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Paid"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="₹450"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_white_card"
+        android:layout_marginTop="-20dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <!-- Timeline Tracker -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Stage 1: Order Placed -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:id="@+id/line1"
+                        android:layout_width="2dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/dot1"
+                        android:layout_centerHorizontal="true"
+                        android:background="#E0E0E0" />
+                    <ImageView
+                        android:id="@+id/dot1"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_check_circle"
+                        app:tint="#4CAF50" />
+                    <TextView
+                        android:id="@+id/tvStage1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/dot1"
+                        android:text="Order Placed"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <!-- Stage 2: Accepted -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+                    <View
+                        android:id="@+id/line2"
+                        android:layout_width="2dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/dot2"
+                        android:layout_centerHorizontal="true"
+                        android:background="#E0E0E0" />
+                    <ImageView
+                        android:id="@+id/dot2"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/circle_background"
+                        app:tint="#BDBDBD" />
+                    <TextView
+                        android:id="@+id/tvStage2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/dot2"
+                        android:text="Order Accepted"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+                <!-- Stage 3: Preparing -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+                    <View
+                        android:id="@+id/line3"
+                        android:layout_width="2dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/dot3"
+                        android:layout_centerHorizontal="true"
+                        android:background="#E0E0E0" />
+                    <ImageView
+                        android:id="@+id/dot3"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/circle_background"
+                        app:tint="#BDBDBD" />
+                    <TextView
+                        android:id="@+id/tvStage3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/dot3"
+                        android:text="Preparing"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+                <!-- Stage 4: Ready -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+                    <View
+                        android:id="@+id/line4"
+                        android:layout_width="2dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/dot4"
+                        android:layout_centerHorizontal="true"
+                        android:background="#E0E0E0" />
+                    <ImageView
+                        android:id="@+id/dot4"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/circle_background"
+                        app:tint="#BDBDBD" />
+                    <TextView
+                        android:id="@+id/tvStage4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/dot4"
+                        android:text="Ready for Pickup"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+                <!-- Stage 5: Completed -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+                    <ImageView
+                        android:id="@+id/dot5"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/circle_background"
+                        app:tint="#BDBDBD" />
+                    <TextView
+                        android:id="@+id/tvStage5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/dot5"
+                        android:text="Completed"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvEstTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:background="#F1F8E9"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="Estimated Preparation Time: 15 mins"
+                android:textColor="#2E7D32"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnBackHome"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_gold_button"
+                android:text="Go to Home"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextOnAccent"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,5 +1,6 @@
 package com.example.apsitcanteen.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.apsitcanteen.OrderStatusActivity;
 import com.example.apsitcanteen.R;
 import com.example.apsitcanteen.models.CartItem;
 import com.example.apsitcanteen.models.Order;
@@ -84,6 +86,13 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             }
         }
         holder.tvItemsSummary.setText(itemsSummary.toString());
+
+        // Tapping on the order card opens the tracking screen
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), OrderStatusActivity.class);
+            intent.putExtra("orderId", order.getOrderId());
+            v.getContext().startActivity(intent);
+        });
     }
 
     private void startPulseAnimation(View view) {
